@@ -35,8 +35,6 @@ under the License.
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
-	<mvc:resources location="/swagger-ui/" mapping="/swagger-ui/**" order="-1001" />
-	
 	<!-- Message converters -->
 	<bean id="jsonMessageConverter"
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
