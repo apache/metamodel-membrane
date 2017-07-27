@@ -49,7 +49,7 @@ public class RestDataSourceDefinition implements DataSourceDefinition {
     }
 
     @JsonAnySetter
-    public void set(String name, Object value) {
+    public void set(final String name, final Object value) {
         properties.put(name, value);
     }
 }
