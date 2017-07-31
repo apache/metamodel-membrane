@@ -39,11 +39,11 @@ public class RestErrorResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, Object> additionalDetails;
 
-    public RestErrorResponse(int code, String message) {
+    public RestErrorResponse(final int code, final String message) {
         this(code, message, null);
     }
 
-    public RestErrorResponse(int code, String message, Map<String, Object> additionalDetails) {
+    public RestErrorResponse(final int code, final String message, final Map<String, Object> additionalDetails) {
         this.code = code;
         this.message = message;
         this.additionalDetails = additionalDetails;
@@ -57,7 +57,7 @@ public class RestErrorResponse {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -65,11 +65,11 @@ public class RestErrorResponse {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
-    public void setAdditionalDetails(Map<String, Object> additionalDetails) {
+    public void setAdditionalDetails(final Map<String, Object> additionalDetails) {
         this.additionalDetails = additionalDetails;
     }
 

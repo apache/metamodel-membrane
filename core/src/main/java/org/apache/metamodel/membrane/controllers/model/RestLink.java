@@ -30,13 +30,12 @@ public class RestLink implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
-
     private URI uri;
 
     public RestLink() {
     }
 
-    public RestLink(String name, URI uri) {
+    public RestLink(final String name, final URI uri) {
         this();
         this.name = name;
         this.uri = uri;
@@ -46,7 +45,7 @@ public class RestLink implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -54,7 +53,7 @@ public class RestLink implements Serializable {
         return uri;
     }
 
-    public void setUri(URI uri) {
+    public void setUri(final URI uri) {
         this.uri = uri;
     }
 }

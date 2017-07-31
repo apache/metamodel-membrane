@@ -50,11 +50,11 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     private final DataSourceRegistry delegate;
     private final LoadingCache<String, DataContext> loadingCache;
 
-    public CachedDataSourceRegistryWrapper(DataSourceRegistry delegate) {
+    public CachedDataSourceRegistryWrapper(final DataSourceRegistry delegate) {
         this(delegate, DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-    public CachedDataSourceRegistryWrapper(DataSourceRegistry delegate, long cacheTimeout, TimeUnit cacheTimeoutUnit) {
+    public CachedDataSourceRegistryWrapper(final DataSourceRegistry delegate, final long cacheTimeout, final TimeUnit cacheTimeoutUnit) {
         this.delegate = delegate;
         this.loadingCache = CacheBuilder.newBuilder().expireAfterAccess(cacheTimeout, cacheTimeoutUnit).removalListener(
                 createRemovalListener()).build(createCacheLoader());
@@ -63,7 +63,7 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     private RemovalListener<String, DataContext> createRemovalListener() {
         return new RemovalListener<String, DataContext>() {
             @Override
-            public void onRemoval(RemovalNotification<String, DataContext> notification) {
+            public void onRemoval(final RemovalNotification<String, DataContext> notification) {
                 final DataContext dataContext = notification.getValue();
                 // some DataContexts are closeable - attempt closing it here
                 FileHelper.safeClose(dataContext);
@@ -74,7 +74,7 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     private CacheLoader<String, DataContext> createCacheLoader() {
         return new CacheLoader<String, DataContext>() {
             @Override
-            public DataContext load(String key) throws Exception {
+            public DataContext load(final String key) throws Exception {
                 return delegate.openDataContext(key);
             }
         };
@@ -86,14 +86,14 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     }
 
     @Override
-    public String registerDataSource(String dataContextName, DataContextProperties dataContextProperties)
+    public String registerDataSource(final String dataContextName, final DataContextProperties dataContextProperties)
             throws DataSourceAlreadyExistException {
         loadingCache.invalidate(dataContextName);
         return delegate.registerDataSource(dataContextName, dataContextProperties);
     }
 
     @Override
-    public DataContext openDataContext(String dataSourceName) throws NoSuchDataSourceException {
+    public DataContext openDataContext(final String dataSourceName) throws NoSuchDataSourceException {
         try {
             return loadingCache.get(dataSourceName);
         } catch (ExecutionException e) {
