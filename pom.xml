@@ -21,12 +21,12 @@ under the License.
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
-		<metamodel.version>5.0-SNAPSHOT</metamodel.version>
+		<metamodel.version>5.0-RC3</metamodel.version>
 	</properties>
 	<parent>
 		<groupId>org.apache.metamodel</groupId>
 		<artifactId>MetaModel</artifactId>
-		<version>5.0-SNAPSHOT</version>
+		<version>5.0-RC3</version>
 	</parent>
 	<scm>
 		<url>https://git-wip-us.apache.org/repos/asf?p=metamodel-membrane.git</url>
