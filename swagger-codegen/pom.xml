@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.apache.metamodel.membrane</groupId>
+		<artifactId>Membrane-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>Membrane-swagger-model</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<swagger.version>2.2.3</swagger.version>
+		<jersey-version>2.22.2</jersey-version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>Membrane-swagger-model</artifactId>
+							<inputSpec>${project.basedir}/../core/src/main/resources/swagger.yaml</inputSpec>
+							<language>java</language>
+							<modelPackage>org.apache.metamodel.membrane.swagger.model</modelPackage>
+							<apiPackage>org.apache.metamodel.membrane.swagger.api</apiPackage>
+							<invokerPackage>org.apache.metamodel.membrane.swagger.invoker</invokerPackage>
+							<library>jersey2</library>
+							<configOptions>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+								<dateLibrary>java8</dateLibrary>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		 -->
+
+		<!-- Client-side dependencies that swagger-codegen requires for client-stubs, 
+			but we don't need them on the server side -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey-version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey-version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<version>${jersey-version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Base64 encoding that works in both JVM and Android -->
+		<dependency>
+			<groupId>com.brsanthu</groupId>
+			<artifactId>migbase64</artifactId>
+			<version>2.2</version>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>

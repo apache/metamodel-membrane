@@ -8,3 +8,4 @@ target/
 *.ipr
 *.iws
 .vscode/
+.DS_Store

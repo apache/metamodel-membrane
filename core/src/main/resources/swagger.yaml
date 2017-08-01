@@ -38,30 +38,7 @@ paths:
         200:
           description: The system is operational
           schema:
-            type: object
-            properties:
-              ping:
-                type: string
-                description: Should return 'pong!' when the system is operational
-              application:
-                type: string
-                description: The name of the application running (Apache MetaModel Membrane)
-              version:
-                type: string
-                description: The version of the application running
-              server-time:
-                type: object
-                properties:
-                  timestamp:
-                    type: integer
-                    format: int64
-                    description: The server-time in timestamp format (millis since 1st of January 1970)
-                  iso8601:
-                    type: string
-                    description: The server-time in ISO-8601 format
-              canonical-hostname:
-                type: string
-                description: The canonical hostname of the server
+            $ref: "#/definitions/helloResponse"
   /{tenant}:
     parameters:
       - name: tenant
@@ -75,13 +52,7 @@ paths:
         200:
           description: Tenant created
           schema:
-            properties:
-              type:
-                type: string
-                description: The type of entity (tenant)
-              name:
-                type: string
-                description: The tenant name/identifier
+            $ref: "#/definitions/putTenantResponse"
         409:
           description: Tenant already exist
           schema:
@@ -97,26 +68,7 @@ paths:
         200:
           description: Tenant found
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (tenant)
-              name:
-                type: string
-                description: The tenant name/identifier
-              datasources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: The name of the datasource
-                    uri:
-                      type: string
-                      format: uri
-                      description: A link to the datasource information
+            $ref: "#/definitions/getTenantResponse"
     delete:
       summary: Delete tenant
       description: Deletes a tenant from the system
@@ -124,14 +76,7 @@ paths:
         200:
           description: Tenant deleted
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (tenant)
-              name:
-                type: string
-                description: The tenant name/identifier
+            ref: "#/definitions/deleteTenantResponse"
         404:
           description: Tenant not found
           schema:
@@ -153,37 +98,7 @@ paths:
         200:
           description: Datasource found
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (datasource)
-              name:
-                type: string
-                description: The datasource name
-              tenant:
-                type: string
-                description: The tenant name
-              updateable:
-                type: boolean
-                description: Is this datasource updateable?
-              query_uri:
-                type: string
-                description: A link to the query endpoint for this datasource
-                format: uri
-              schemas:
-                type: array
-                description: The schemas of this datasource
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: The schema name
-                    uri:
-                      type: string
-                      description: A link to the schema information
-                      format: uri
+            $ref: "#/definitions/getDatasourceResponse"
         404:
           description: Datasource not found
           schema:
@@ -195,10 +110,12 @@ paths:
           description: The definition of the datasource using properties. The same properties as normally applied in MetaModel factories (e.g. 'type', 'resource', 'url', 'driver-class' ,'hostname', 'port', 'catalog', 'database', 'username', 'port', 'table-defs') are used here.
           required: true
           schema:
-            type: object
+            $ref: "#/definitions/putDatasourceResponse"
       responses:
         200:
           description: Datasource created
+          schema:
+            $ref: "#/definitions/getDatasourceResponse"
   /{tenant}/{datasource}/q:
     parameters:
       - name: tenant
@@ -268,30 +185,7 @@ paths:
         200:
           description: Schema found
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (schema)
-              name:
-                type: string
-                description: The schema name
-              datasource:
-                type: string
-                description: The datasource name
-              tables:
-                type: array
-                description: The names of the schema's tables
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: The table name
-                    uri:
-                      type: string
-                      description: A link to the table information
-                      format: uri
+            $ref: "#/definitions/getSchemaResponse"
         404:
           description: Schema not found
           schema:
@@ -323,36 +217,7 @@ paths:
         200:
           description: Table found
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (table)
-              name:
-                type: string
-                description: The table name
-              schema:
-                type: string
-                description: The schema name
-              datasource:
-                type: string
-                description: The datasource name
-              tenant:
-                type: string
-                description: The tenant name
-              columns:
-                type: array
-                description: The names of the table's columns
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: The column name
-                    uri:
-                      type: string
-                      description: A link to the column information
-                      format: uri
+            $ref: "#/definitions/getTableResponse"
         404:
           description: Table not found
           schema:
@@ -406,14 +271,12 @@ paths:
           description: The data to insert
           required: true
           schema:
-            type: array
-            items:
-              description: A record to insert where each key is expected to match a column name and each value is the value to put.
-              type: object
+            $ref: "#/definitions/insertionRequest"
       responses:
         200:
           description: Data inserted
-          #TODO
+          schema:
+            $ref: "#/definitions/insertionResponse"
         404:
           description: Table not found
           schema:
@@ -451,54 +314,7 @@ paths:
         200:
           description: Query executed
           schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of entity (column)
-              name:
-                type: string
-                description: The column name
-              table:
-                type: string
-                description: The table name
-              schema:
-                type: string
-                description: The schema name
-              datasource:
-                type: string
-                description: The datasource name
-              tenant:
-                type: string
-                description: The tenant name
-              metadata:
-                type: object
-                description: Metadata about the column
-                properties:
-                  number:
-                    type: integer
-                    description: The column number (0-based)
-                  size:
-                    type: integer
-                    description: The column size
-                  nullable:
-                    type: boolean
-                    description: Is the column nullable?
-                  primary-key:
-                    type: boolean
-                    description: Is the column a primary key?
-                  indexed:
-                    type: boolean
-                    description: Is the column indexed?
-                  column-type:
-                    type: string
-                    description: The column type (as interpreted/adapted by Apache MetaModel)
-                  native-type:
-                    type: string
-                    description: The native column type (as defined by the datasource itself)
-                  remarks:
-                    type: string
-                    description: Any remarks on the column
+            $ref: "#/definitions/getColumnResponse"
         404:
           description: Column not found
           schema:
@@ -523,6 +339,249 @@ definitions:
           type: array
           items:
             type: object
+  helloResponse:
+    type: object
+    properties:
+      ping:
+        type: string
+        description: Should return 'pong!' when the system is operational
+      application:
+        type: string
+        description: The name of the application running (Apache MetaModel Membrane)
+      version:
+        type: string
+        description: The version of the application running
+      server-time:
+        type: object
+        properties:
+          timestamp:
+            type: integer
+            format: int64
+            description: The server-time in timestamp format (millis since 1st of January 1970)
+          iso8601:
+            type: string
+            description: The server-time in ISO-8601 format
+      canonical-hostname:
+        type: string
+        description: The canonical hostname of the server
+      open-api:
+        type: object
+        properties:
+          spec:
+            type: string
+            format: uri
+            description: Href for the Open API (fka. Swagger) specification that describes the service.
+  getTenantResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (tenant)
+      name:
+        type: string
+        description: The tenant name/identifier
+      datasources:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the datasource
+            uri:
+              type: string
+              format: uri
+              description: A link to the datasource information
+  putTenantResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (tenant)
+      name:
+        type: string
+        description: The tenant name/identifier
+  deleteTenantResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (tenant)
+      name:
+        type: string
+        description: The tenant name/identifier
+      deleted:
+        type: boolean
+        description: A confirmation boolean to indicate that the deletion is effectuated.
+  insertionRequest:
+    type: array
+    items:
+      description: A record to insert where each key is expected to match a column name and each value is the value to put.
+      type: object
+  insertionResponse:
+    description: Represents the result of inserting records to a table
+    type: object
+    properties:
+      status:
+        type: string
+        description: A confirmation 'ok' that the insertion went well.
+      inserted-rows:
+        type: number
+        format: int32
+        description: The amount of inserted records
+      generated-keys:
+        type: array
+        description: An array of generated keys for the records, if any
+        items:
+          type: object
+  putDatasourceResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: DataContext type (e.g. 'jdbc', 'csv' etc.)
+    additionalProperties:
+      type: string
+  getDatasourceResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (datasource)
+      name:
+        type: string
+        description: The datasource name
+      tenant:
+        type: string
+        description: The tenant name
+      updateable:
+        type: boolean
+        description: Is this datasource updateable?
+      query_uri:
+        type: string
+        description: A link to the query endpoint for this datasource
+        format: uri
+      schemas:
+        type: array
+        description: The schemas of this datasource
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The schema name
+            uri:
+              type: string
+              description: A link to the schema information
+              format: uri
+  getSchemaResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (schema)
+      name:
+        type: string
+        description: The schema name
+      datasource:
+        type: string
+        description: The datasource name
+      tenant:
+        type: string
+        description: The tenant name
+      tables:
+        type: array
+        description: The names of the schema's tables
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The table name
+            uri:
+              type: string
+              description: A link to the table information
+              format: uri
+  getTableResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (table)
+      name:
+        type: string
+        description: The table name
+      schema:
+        type: string
+        description: The schema name
+      datasource:
+        type: string
+        description: The datasource name
+      tenant:
+        type: string
+        description: The tenant name
+      columns:
+        type: array
+        description: The names of the table's columns
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The column name
+            uri:
+              type: string
+              description: A link to the column information
+              format: uri
+  getColumnResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (column)
+      name:
+        type: string
+        description: The column name
+      table:
+        type: string
+        description: The table name
+      schema:
+        type: string
+        description: The schema name
+      datasource:
+        type: string
+        description: The datasource name
+      tenant:
+        type: string
+        description: The tenant name
+      metadata:
+        type: object
+        description: Metadata about the column
+        properties:
+          number:
+            type: integer
+            description: The column number (0-based)
+          size:
+            type: integer
+            description: The column size
+          nullable:
+            type: boolean
+            description: Is the column nullable?
+          primary-key:
+            type: boolean
+            description: Is the column a primary key?
+          indexed:
+            type: boolean
+            description: Is the column indexed?
+          column-type:
+            type: string
+            description: The column type (as interpreted/adapted by Apache MetaModel)
+          native-type:
+            type: string
+            description: The native column type (as defined by the datasource itself)
+          remarks:
+            type: string
+            description: Any remarks on the column
   error:
     description: Elaborates the error that occurred
     type: object

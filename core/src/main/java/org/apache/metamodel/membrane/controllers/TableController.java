@@ -19,9 +19,7 @@
 package org.apache.metamodel.membrane.controllers;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.UriBuilder;
@@ -30,7 +28,8 @@ import org.apache.metamodel.DataContext;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
-import org.apache.metamodel.membrane.controllers.model.RestLink;
+import org.apache.metamodel.membrane.swagger.model.GetTableResponse;
+import org.apache.metamodel.membrane.swagger.model.GetTableResponseColumns;
 import org.apache.metamodel.schema.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,12 +53,12 @@ public class TableController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public GetTableResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId,
             @PathVariable("table") String tableId) {
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
         final DataContext dataContext = tenantContext.getDataSourceRegistry().openDataContext(dataSourceName);
-        
+
         final DataContextTraverser traverser = new DataContextTraverser(dataContext);
 
         final Table table = traverser.getTable(schemaId, tableId);
@@ -69,17 +68,18 @@ public class TableController {
 
         final String tableName = table.getName();
         final String schemaName = table.getSchema().getName();
-        final List<RestLink> columnsLinks = Arrays.stream(table.getColumnNames()).map(c -> new RestLink(String.valueOf(
-                c), uriBuilder.build(tenantName, dataSourceName, schemaName, tableName, c))).collect(Collectors
-                        .toList());
+        final List<GetTableResponseColumns> columnsLinks = Arrays.stream(table.getColumnNames()).map(c -> {
+            final String uri = uriBuilder.build(tenantName, dataSourceName, schemaName, tableName, c).toString();
+            return new GetTableResponseColumns().name(c).uri(uri);
+        }).collect(Collectors.toList());
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("type", "table");
-        map.put("name", tableName);
-        map.put("schema", schemaName);
-        map.put("datasource", dataSourceName);
-        map.put("tenant", tenantName);
-        map.put("columns", columnsLinks);
-        return map;
+        final GetTableResponse resp = new GetTableResponse();
+        resp.type("table");
+        resp.name(tableName);
+        resp.schema(schemaName);
+        resp.datasource(dataSourceName);
+        resp.tenant(tenantName);
+        resp.columns(columnsLinks);
+        return resp;
     }
 }

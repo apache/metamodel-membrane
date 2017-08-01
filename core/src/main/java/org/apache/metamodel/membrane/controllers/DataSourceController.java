@@ -20,7 +20,6 @@ package org.apache.metamodel.membrane.controllers;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +34,8 @@ import org.apache.metamodel.factory.DataContextPropertiesImpl;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
-import org.apache.metamodel.membrane.controllers.model.RestLink;
+import org.apache.metamodel.membrane.swagger.model.GetDatasourceResponse;
+import org.apache.metamodel.membrane.swagger.model.GetDatasourceResponseSchemas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,7 +58,7 @@ public class DataSourceController {
 
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public Map<String, Object> put(@PathVariable("tenant") String tenantId,
+    public GetDatasourceResponse put(@PathVariable("tenant") String tenantId,
             @PathVariable("datasource") String dataSourceId,
             @Valid @RequestBody RestDataSourceDefinition dataContextDefinition) {
 
@@ -81,7 +81,7 @@ public class DataSourceController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public GetDatasourceResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("datasource") String dataSourceName) {
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
         final DataContext dataContext = tenantContext.getDataSourceRegistry().openDataContext(dataSourceName);
@@ -89,16 +89,19 @@ public class DataSourceController {
         final String tenantName = tenantContext.getTenantName();
         final UriBuilder uriBuilder = UriBuilder.fromPath("/{tenant}/{dataContext}/s/{schema}");
 
-        final List<RestLink> schemaLinks = Arrays.stream(dataContext.getSchemaNames()).map(s -> new RestLink(s,
-                uriBuilder.build(tenantName, dataSourceName, s))).collect(Collectors.toList());
+        final List<GetDatasourceResponseSchemas> schemaLinks = Arrays.stream(dataContext.getSchemaNames()).map(s -> {
+            final String uri = uriBuilder.build(tenantName, dataSourceName, s).toString();
+            return new GetDatasourceResponseSchemas().name(s).uri(uri);
+        }).collect(Collectors.toList());
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("type", "datasource");
-        map.put("name", dataSourceName);
-        map.put("tenant", tenantName);
-        map.put("updateable", dataContext instanceof UpdateableDataContext);
-        map.put("query_uri", UriBuilder.fromPath("/{tenant}/{dataContext}/query").build(tenantName, dataSourceName));
-        map.put("schemas", schemaLinks);
-        return map;
+        final GetDatasourceResponse resp = new GetDatasourceResponse();
+        resp.type("datasource");
+        resp.name(dataSourceName);
+        resp.tenant(tenantName);
+        resp.updateable(dataContext instanceof UpdateableDataContext);
+        resp.queryUri(UriBuilder.fromPath("/{tenant}/{dataContext}/query").build(tenantName, dataSourceName)
+                .toString());
+        resp.schemas(schemaLinks);
+        return resp;
     }
 }

@@ -30,6 +30,11 @@ under the License.
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.metamodel.membrane</groupId>
+			<artifactId>Membrane-swagger-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.metamodel</groupId>
 			<artifactId>MetaModel-spring</artifactId>
 		</dependency>

@@ -19,19 +19,11 @@
 package org.apache.metamodel.membrane.controllers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 
 import org.apache.metamodel.membrane.app.InMemoryTenantRegistry;
 import org.apache.metamodel.membrane.app.TenantRegistry;
-import org.apache.metamodel.membrane.controllers.ColumnController;
-import org.apache.metamodel.membrane.controllers.DataSourceController;
-import org.apache.metamodel.membrane.controllers.QueryController;
-import org.apache.metamodel.membrane.controllers.SchemaController;
-import org.apache.metamodel.membrane.controllers.TableController;
-import org.apache.metamodel.membrane.controllers.TableDataController;
-import org.apache.metamodel.membrane.controllers.TenantController;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -73,7 +65,7 @@ public class TenantInteractionScenarioTest {
             final Map<?, ?> map = new ObjectMapper().readValue(content, Map.class);
             assertEquals("tenant", map.get("type"));
             assertEquals("tenant1", map.get("name"));
-            assertNull(map.get("datasources"));
+            assertEquals("[]", map.get("datasources").toString());
         }
 
         // create datasource
@@ -157,7 +149,7 @@ public class TenantInteractionScenarioTest {
             final String content = result.getResponse().getContentAsString();
             final Map<?, ?> map = new ObjectMapper().readValue(content, Map.class);
             assertEquals("dataset", map.get("type"));
-            assertEquals("[columns.name, columns.table]", map.get("header").toString());
+            assertEquals("[columns.name, columns.table]", map.get("headers").toString());
             assertEquals("[[bar, foo], [baz, foo], [greeting, hello_world], [who, hello_world]]", map.get("data")
                     .toString());
         }
@@ -194,7 +186,7 @@ public class TenantInteractionScenarioTest {
             final String content = result.getResponse().getContentAsString();
             final Map<?, ?> map = new ObjectMapper().readValue(content, Map.class);
             assertEquals("dataset", map.get("type"));
-            assertEquals("[hello_world.greeting, hello_world.who AS who_is_it]", map.get("header").toString());
+            assertEquals("[hello_world.greeting, hello_world.who AS who_is_it]", map.get("headers").toString());
             assertEquals("[[Howdy, MetaModel], [Hi, Apache]]", map.get("data")
                     .toString());
         }

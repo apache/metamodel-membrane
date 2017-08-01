@@ -43,6 +43,7 @@ under the License.
 	<inceptionYear>2017</inceptionYear>
 	<packaging>pom</packaging>
 	<modules>
+		<module>swagger-codegen</module>
 		<module>core</module>
 		<module>war</module>
 		<module>undertow</module>

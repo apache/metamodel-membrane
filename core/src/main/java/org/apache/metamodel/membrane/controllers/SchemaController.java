@@ -19,9 +19,7 @@
 package org.apache.metamodel.membrane.controllers;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.UriBuilder;
@@ -30,7 +28,8 @@ import org.apache.metamodel.DataContext;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
-import org.apache.metamodel.membrane.controllers.model.RestLink;
+import org.apache.metamodel.membrane.swagger.model.GetSchemaResponse;
+import org.apache.metamodel.membrane.swagger.model.GetSchemaResponseTables;
 import org.apache.metamodel.schema.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,7 +53,7 @@ public class SchemaController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public GetSchemaResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId) {
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
         final DataContext dataContext = tenantContext.getDataSourceRegistry().openDataContext(dataSourceName);
@@ -66,15 +65,17 @@ public class SchemaController {
         final UriBuilder uriBuilder = UriBuilder.fromPath("/{tenant}/{dataContext}/s/{schema}/t/{table}");
 
         final String schemaName = schema.getName();
-        final List<RestLink> tableLinks = Arrays.stream(schema.getTableNames()).map(t -> new RestLink(String.valueOf(t),
-                uriBuilder.build(tenantName, dataSourceName, schemaName, t))).collect(Collectors.toList());
+        final List<GetSchemaResponseTables> tableLinks = Arrays.stream(schema.getTableNames()).map(t -> {
+            final String uri = uriBuilder.build(tenantName, dataSourceName, schemaName, t).toString();
+            return new GetSchemaResponseTables().name(String.valueOf(t)).uri(uri);
+        }).collect(Collectors.toList());
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("type", "schema");
-        map.put("name", schemaName);
-        map.put("datasource", dataSourceName);
-        map.put("tenant", tenantName);
-        map.put("tables", tableLinks);
-        return map;
+        final GetSchemaResponse resp = new GetSchemaResponse();
+        resp.type("schema");
+        resp.name(schemaName);
+        resp.datasource(dataSourceName);
+        resp.tenant(tenantName);
+        resp.tables(tableLinks);
+        return resp;
     }
 }

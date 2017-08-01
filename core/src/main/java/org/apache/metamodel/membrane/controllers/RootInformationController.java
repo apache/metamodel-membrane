@@ -23,12 +23,13 @@ import java.net.InetAddress;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import org.apache.metamodel.membrane.swagger.model.HelloResponse;
+import org.apache.metamodel.membrane.swagger.model.HelloResponseOpenapi;
+import org.apache.metamodel.membrane.swagger.model.HelloResponseServertime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,35 +49,34 @@ public class RootInformationController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, Object> index() {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("ping", "pong!");
-        map.put("application", "Apache MetaModel Membrane");
-        map.put("version", getVersion());
-        map.put("server-time", getServerTime());
+    public HelloResponse index() {
+        final HelloResponse resp = new HelloResponse();
+        resp.ping("pong!");
+        resp.application("Apache MetaModel Membrane");
+        resp.version(getVersion());
+        resp.serverTime(getServerTime());
         try {
-            map.put("canonical-hostname", InetAddress.getLocalHost().getCanonicalHostName());
+            resp.canonicalHostname(InetAddress.getLocalHost().getCanonicalHostName());
         } catch (Exception e) {
             logger.info("Failed to get canonical-hostname", e);
         }
-        map.put("open-api", getOpenApi());
-        return map;
+        resp.openApi(getOpenApi());
+        return resp;
     }
 
-    private Map<String, Object> getOpenApi() {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("spec", servletContext.getContextPath() + "/swagger.json");
-        return map;
+    private HelloResponseOpenapi getOpenApi() {
+        final String swaggerUri = servletContext.getContextPath() + "/swagger.json";
+        return new HelloResponseOpenapi().spec(swaggerUri);
     }
 
-    private Map<String, Object> getServerTime() {
+    private HelloResponseServertime getServerTime() {
         final ZonedDateTime now = ZonedDateTime.now();
         final String dateFormatted = now.format(DateTimeFormatter.ISO_INSTANT);
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("timestamp", new Date().getTime());
-        map.put("iso8601", dateFormatted);
-        return map;
+        final HelloResponseServertime serverTime = new HelloResponseServertime();
+        serverTime.timestamp(new Date().getTime());
+        serverTime.iso8601(dateFormatted);
+        return serverTime;
     }
 
     /**

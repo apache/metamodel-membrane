@@ -18,15 +18,16 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.data.DataSet;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.swagger.model.QueryResponse;
 import org.apache.metamodel.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -51,7 +52,7 @@ public class QueryController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public QueryResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName,
             @RequestParam(value = "sql", required = true) String queryString,
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -60,11 +61,11 @@ public class QueryController {
         final DataContext dataContext = tenantContext.getDataSourceRegistry().openDataContext(dataSourceName);
 
         final Query query = dataContext.parseQuery(queryString);
-        
+
         return executeQuery(dataContext, query, offset, limit);
     }
 
-    public static Map<String, Object> executeQuery(DataContext dataContext, Query query, Integer offset, Integer limit) {
+    public static QueryResponse executeQuery(DataContext dataContext, Query query, Integer offset, Integer limit) {
 
         if (offset != null) {
             query.setFirstRow(offset);
@@ -73,13 +74,21 @@ public class QueryController {
             query.setMaxRows(limit);
         }
 
-        final DataSet dataSet = dataContext.executeQuery(query);
+        final List<String> headers;
+        final List<List<Object>> data = new ArrayList<>();
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("type", "dataset");
-        map.put("header", Arrays.stream(dataSet.getSelectItems()).map((si) -> si.toString()).collect(Collectors
-                .toList()));
-        map.put("data", dataSet.toObjectArrays());
-        return map;
+        try (final DataSet dataSet = dataContext.executeQuery(query)) {
+            headers = Arrays.stream(dataSet.getSelectItems()).map((si) -> si.toString()).collect(Collectors.toList());
+            while (dataSet.next()) {
+                final Object[] values = dataSet.getRow().getValues();
+                data.add(Arrays.asList(values));
+            }
+        }
+
+        final QueryResponse resp = new QueryResponse();
+        resp.type("dataset");
+        resp.headers(headers);
+        resp.data(data);
+        return resp;
     }
 }

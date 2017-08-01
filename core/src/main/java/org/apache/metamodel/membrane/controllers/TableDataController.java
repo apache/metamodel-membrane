@@ -18,7 +18,7 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
-import java.util.LinkedHashMap;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +32,8 @@ import org.apache.metamodel.insert.RowInsertionBuilder;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.swagger.model.InsertionResponse;
+import org.apache.metamodel.membrane.swagger.model.QueryResponse;
 import org.apache.metamodel.query.Query;
 import org.apache.metamodel.schema.Table;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.Lists;
 
 @RestController
 @RequestMapping(value = { "/{tenant}/{dataContext}/schemas/{schema}/tables/{table}/data",
@@ -58,13 +62,13 @@ public class TableDataController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public QueryResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId,
             @PathVariable("table") String tableId, @RequestParam(value = "offset", required = false) Integer offset,
             @RequestParam(value = "limit", required = false) Integer limit) {
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
         final DataContext dataContext = tenantContext.getDataSourceRegistry().openDataContext(dataSourceName);
-        
+
         final DataContextTraverser traverser = new DataContextTraverser(dataContext);
 
         final Table table = traverser.getTable(schemaId, tableId);
@@ -76,12 +80,13 @@ public class TableDataController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> post(@PathVariable("tenant") String tenantId,
+    public InsertionResponse post(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId,
             @PathVariable("table") String tableId, @RequestBody final List<Map<String, Object>> inputRecords) {
 
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
-        final UpdateableDataContext dataContext = tenantContext.getDataSourceRegistry().openDataContextForUpdate(dataSourceName);
+        final UpdateableDataContext dataContext = tenantContext.getDataSourceRegistry().openDataContextForUpdate(
+                dataSourceName);
 
         final DataContextTraverser traverser = new DataContextTraverser(dataContext);
 
@@ -100,14 +105,16 @@ public class TableDataController {
             }
         });
 
-        final Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "ok");
+        final InsertionResponse response = new InsertionResponse();
+        response.status("ok");
 
         if (result.getInsertedRows().isPresent()) {
-            response.put("inserted-rows", result.getInsertedRows().get());
+            final Integer insertedRecords = result.getInsertedRows().get();
+            response.insertedRows(new BigDecimal(insertedRecords));
         }
         if (result.getGeneratedKeys().isPresent()) {
-            response.put("generated-keys", result.getGeneratedKeys().get());
+            final Iterable<Object> keys = result.getGeneratedKeys().get();
+            response.generatedKeys(Lists.newArrayList(keys));
         }
 
         return response;

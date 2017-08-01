@@ -18,13 +18,12 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.swagger.model.GetColumnResponse;
+import org.apache.metamodel.membrane.swagger.model.GetColumnResponseMetadata;
 import org.apache.metamodel.schema.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -48,7 +47,7 @@ public class ColumnController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> get(@PathVariable("tenant") String tenantId,
+    public GetColumnResponse get(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId,
             @PathVariable("table") String tableId, @PathVariable("column") String columnId) {
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
@@ -62,25 +61,24 @@ public class ColumnController {
         final String tableName = column.getTable().getName();
         final String schemaName = column.getTable().getSchema().getName();
 
-        final Map<String, Object> metadata = new LinkedHashMap<>();
-        metadata.put("number", column.getColumnNumber());
-        metadata.put("size", column.getColumnSize());
-        metadata.put("nullable", column.isNullable());
-        metadata.put("primary-key", column.isPrimaryKey());
-        metadata.put("indexed", column.isIndexed());
-        metadata.put("column-type", column.getType() == null ? null : column.getType().getName());
-        metadata.put("native-type", column.getNativeType());
-        metadata.put("remarks", column.getRemarks());
+        final GetColumnResponseMetadata metadata = new GetColumnResponseMetadata();
+        metadata.number(column.getColumnNumber());
+        metadata.size(column.getColumnSize());
+        metadata.nullable(column.isNullable());
+        metadata.primaryKey(column.isPrimaryKey());
+        metadata.indexed(column.isIndexed());
+        metadata.columnType(column.getType() == null ? null : column.getType().getName());
+        metadata.nativeType(column.getNativeType());
+        metadata.remarks(column.getRemarks());
 
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("type", "column");
-        map.put("name", column.getName());
-        map.put("table", tableName);
-        map.put("schema", schemaName);
-        map.put("datasource", dataSourceName);
-        map.put("tenant", tenantName);
-        map.put("metadata", metadata);
-
-        return map;
+        final GetColumnResponse response = new GetColumnResponse();
+        response.type("column");
+        response.name(column.getName());
+        response.table(tableName);
+        response.schema(schemaName);
+        response.datasource(dataSourceName);
+        response.tenant(tenantName);
+        response.metadata(metadata);
+        return response ;
     }
 }
