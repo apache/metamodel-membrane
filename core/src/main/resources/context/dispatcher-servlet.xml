@@ -34,7 +34,7 @@ under the License.
 			<ref bean="jsonMessageConverter" />
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-
+	
 	<!-- Message converters -->
 	<bean id="jsonMessageConverter"
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
@@ -43,6 +43,10 @@ under the License.
 				<value>application/json;charset=UTF-8</value>
 				<value>application/json</value>
 			</list>
+		</property>
+		<property name="objectMapper">
+			<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+			</bean>
 		</property>
 	</bean>
 

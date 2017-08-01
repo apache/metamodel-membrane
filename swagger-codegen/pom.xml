@@ -50,9 +50,10 @@ under the License.
 							<inputSpec>${project.basedir}/../core/src/main/resources/swagger.yaml</inputSpec>
 							<language>java</language>
 							<modelPackage>org.apache.metamodel.membrane.swagger.model</modelPackage>
-							<apiPackage>org.apache.metamodel.membrane.swagger.api</apiPackage>
 							<invokerPackage>org.apache.metamodel.membrane.swagger.invoker</invokerPackage>
+							<generateApis>false</generateApis>
 							<library>jersey2</library>
+							<useJaxbAnnotations>true</useJaxbAnnotations>
 							<configOptions>
 								<sourceFolder>src/gen/java/main</sourceFolder>
 								<dateLibrary>java8</dateLibrary>

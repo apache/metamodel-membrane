@@ -421,6 +421,8 @@ definitions:
   insertionResponse:
     description: Represents the result of inserting records to a table
     type: object
+    required:
+      - status
     properties:
       status:
         type: string
