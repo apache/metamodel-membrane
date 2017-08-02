@@ -30,7 +30,7 @@ under the License.
 
 	<properties>
 		<swagger.version>2.2.3</swagger.version>
-		<jersey-version>2.22.2</jersey-version>
+		<jersey.version>2.22.2</jersey.version>
 	</properties>
 
 	<build>
@@ -96,19 +96,19 @@ under the License.
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>${jersey-version}</version>
+			<version>${jersey.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey-version}</version>
+			<version>${jersey.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-multipart</artifactId>
-			<version>${jersey-version}</version>
+			<version>${jersey.version}</version>
 			<optional>true</optional>
 		</dependency>
 
