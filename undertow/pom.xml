@@ -57,6 +57,10 @@ under the License.
 									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/services/org.apache.metamodel.factory.DataContextFactory</resource>
+								</transformer>
 							</transformers>
 						</configuration>
 					</execution>

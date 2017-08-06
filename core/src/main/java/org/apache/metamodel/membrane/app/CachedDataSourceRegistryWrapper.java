@@ -19,7 +19,6 @@
 package org.apache.metamodel.membrane.app;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.metamodel.DataContext;
@@ -34,6 +33,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
  * A wrapper that adds a cache around a {@link DataSourceRegistry} in order to
@@ -54,7 +54,8 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
         this(delegate, DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-    public CachedDataSourceRegistryWrapper(final DataSourceRegistry delegate, final long cacheTimeout, final TimeUnit cacheTimeoutUnit) {
+    public CachedDataSourceRegistryWrapper(final DataSourceRegistry delegate, final long cacheTimeout,
+            final TimeUnit cacheTimeoutUnit) {
         this.delegate = delegate;
         this.loadingCache = CacheBuilder.newBuilder().expireAfterAccess(cacheTimeout, cacheTimeoutUnit).removalListener(
                 createRemovalListener()).build(createCacheLoader());
@@ -95,8 +96,8 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     @Override
     public DataContext openDataContext(final String dataSourceName) throws NoSuchDataSourceException {
         try {
-            return loadingCache.get(dataSourceName);
-        } catch (ExecutionException e) {
+            return loadingCache.getUnchecked(dataSourceName);
+        } catch (UncheckedExecutionException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
