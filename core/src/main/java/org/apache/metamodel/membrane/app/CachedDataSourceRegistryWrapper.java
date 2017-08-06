@@ -86,10 +86,10 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     }
 
     @Override
-    public String registerDataSource(final String dataContextName, final DataContextProperties dataContextProperties)
+    public String registerDataSource(final String dataSourceName, final DataContextProperties dataContextProperties)
             throws DataSourceAlreadyExistException {
-        loadingCache.invalidate(dataContextName);
-        return delegate.registerDataSource(dataContextName, dataContextProperties);
+        loadingCache.invalidate(dataSourceName);
+        return delegate.registerDataSource(dataSourceName, dataContextProperties);
     }
 
     @Override

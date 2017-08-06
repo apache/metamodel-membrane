@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.metamodel.factory.DataContextProperties;
+import org.apache.metamodel.factory.DataContextPropertiesImpl;
 import org.apache.metamodel.membrane.app.DataSourceDefinition;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -36,6 +38,22 @@ public class RestDataSourceDefinition implements DataSourceDefinition {
     @JsonProperty(value = "type", required = true)
     @NotNull
     private String type;
+
+    // default constructor
+    public RestDataSourceDefinition() {
+    }
+
+    // specialized constructor for DataContextProperties conversion
+    public RestDataSourceDefinition(DataContextProperties dataContextProperties) {
+        properties.putAll(dataContextProperties.toMap());
+        type = (String) properties.remove(DataContextPropertiesImpl.PROPERTY_DATA_CONTEXT_TYPE);
+    }
+
+    public DataContextProperties toDataContextProperties() {
+        final DataContextPropertiesImpl dataContextPropertiesImpl = new DataContextPropertiesImpl(properties);
+        dataContextPropertiesImpl.setDataContextType(type);
+        return dataContextPropertiesImpl;
+    }
 
     @Override
     public String getType() {

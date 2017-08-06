@@ -19,4 +19,8 @@ FROM openjdk:8-jre-alpine
 
 COPY target/membrane-undertow-server.jar membrane-undertow-server.jar
 
+VOLUME /data
+
+ENV DATA_DIRECTORY=/data
+
 CMD java -server -jar membrane-undertow-server.jar

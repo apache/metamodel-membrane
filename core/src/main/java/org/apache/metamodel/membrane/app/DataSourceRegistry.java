@@ -34,7 +34,7 @@ public interface DataSourceRegistry {
 
     public List<String> getDataSourceNames();
 
-    public String registerDataSource(String dataContextName, DataContextProperties dataContextProperties) throws DataSourceAlreadyExistException;
+    public String registerDataSource(String dataSourceName, DataContextProperties dataContextProperties) throws DataSourceAlreadyExistException;
 
     public DataContext openDataContext(String dataSourceName) throws NoSuchDataSourceException;
 

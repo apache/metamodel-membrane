@@ -32,7 +32,8 @@ public interface TenantRegistry {
 
     public TenantContext getTenantContext(String tenantIdentifier) throws NoSuchTenantException;
 
-    public TenantContext createTenantContext(String tenantIdentifier) throws TenantAlreadyExistException;
+    public TenantContext createTenantContext(String tenantIdentifier) throws IllegalArgumentException,
+            TenantAlreadyExistException;
 
     public void deleteTenantContext(String tenantIdentifier) throws NoSuchTenantException;
 }
