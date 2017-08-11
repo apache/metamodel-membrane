@@ -27,10 +27,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class JacksonConfig {
 
+    // use the JSON class from swagger-codegen
+    private static final ObjectMapper OBJECT_MAPPER = new JSON().getContext(Object.class);;
+
+    public static ObjectMapper getObjectMapper() {
+        return OBJECT_MAPPER;
+    }
+
     @Bean(name = "objectMapper")
     public ObjectMapper objectMapper() {
-        // use the JSON class from swagger-codegen
-        final JSON json = new JSON();
-        return json.getContext(Object.class);
+        return getObjectMapper();
     }
 }

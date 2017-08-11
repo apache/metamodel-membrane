@@ -30,17 +30,17 @@ import org.apache.metamodel.DataContext;
 import org.apache.metamodel.factory.DataContextProperties;
 import org.apache.metamodel.membrane.app.DataContextSupplier;
 import org.apache.metamodel.membrane.app.DataSourceRegistry;
+import org.apache.metamodel.membrane.app.config.JacksonConfig;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
-import org.apache.metamodel.membrane.swagger.invoker.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 
 public class FileBasedDataSourceRegistry implements DataSourceRegistry {
 
-    private static final ObjectMapper OBJECT_MAPPER = new JSON().getContext(Object.class);
+    private static final ObjectMapper OBJECT_MAPPER = JacksonConfig.getObjectMapper();
     private static final String DATASOURCE_FILE_SUFFIX = ".json";
     private static final String DATASOURCE_FILE_PREFIX = "ds_";
 

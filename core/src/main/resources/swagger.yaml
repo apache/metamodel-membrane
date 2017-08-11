@@ -76,7 +76,7 @@ paths:
         200:
           description: Tenant deleted
           schema:
-            ref: "#/definitions/deleteTenantResponse"
+            $ref: "#/definitions/deleteTenantResponse"
         404:
           description: Tenant not found
           schema:
@@ -271,12 +271,12 @@ paths:
           description: The data to insert
           required: true
           schema:
-            $ref: "#/definitions/insertionRequest"
+            $ref: "#/definitions/postDataRequest"
       responses:
         200:
           description: Data inserted
           schema:
-            $ref: "#/definitions/insertionResponse"
+            $ref: "#/definitions/postDataResponse"
         404:
           description: Table not found
           schema:
@@ -413,20 +413,83 @@ definitions:
       deleted:
         type: boolean
         description: A confirmation boolean to indicate that the deletion is effectuated.
-  insertionRequest:
-    type: array
-    items:
-      description: A record to insert where each key is expected to match a column name and each value is the value to put.
-      type: object
-  insertionResponse:
-    description: Represents the result of inserting records to a table
+  postDataRequest:
+    type: object
+    properties:
+      update:
+        type: array
+        items:
+          type: object
+          properties:
+            values:
+              type: object
+              description: Record values to update where each key is expected to match a column name and each value is the value to put.
+              example:
+                favorite_java_library: Apache MetaModel
+            where:
+              type: array
+              items:
+                $ref: "#/definitions/whereCondition"
+      delete:
+        type: array
+        items:
+          type: object
+          properties:
+            where:
+              type: array
+              items:
+                $ref: "#/definitions/whereCondition"
+      insert:
+        type: array
+        items:
+          description: A record to insert where each key is expected to match a column name and each value is the value to put.
+          type: object
+        example:
+        - fullname: Jane Doe
+          email_address: janedoe@gmail.com
+          favourite_java_library: null
+        - fullname: John Doe
+          email_address: johndoe@gmail.com
+          favourite_java_library: "MetaModel"
+  whereCondition:
+    type: object
+    properties:
+      column:
+        type: string
+      operator:
+        $ref: "#/definitions/operator"
+      operand:
+        type: object
+    example:
+      column: fullname
+      operator: like
+      operand: "John%Doe"
+  operator:
+    type: string
+    enum:
+    - "eq"
+    - "ne"
+    - "gt"
+    - "lt"
+    - "like"
+    - "not_like"
+  postDataResponse:
+    description: Represents the result of posting a data update to the records to a table
     type: object
     required:
       - status
     properties:
       status:
         type: string
-        description: A confirmation 'ok' that the insertion went well.
+        description: A confirmation 'ok' that the data updates went well.
+      updated-rows:
+        type: number
+        format: int32
+        description: The amount of updated records
+      deleted-rows:
+        type: number
+        format: int32
+        description: The amount of deleted records
       inserted-rows:
         type: number
         format: int32

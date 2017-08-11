@@ -28,14 +28,28 @@ import org.apache.metamodel.UpdateCallback;
 import org.apache.metamodel.UpdateScript;
 import org.apache.metamodel.UpdateSummary;
 import org.apache.metamodel.UpdateableDataContext;
+import org.apache.metamodel.data.RowBuilder;
+import org.apache.metamodel.data.WhereClauseBuilder;
+import org.apache.metamodel.delete.RowDeletionBuilder;
 import org.apache.metamodel.insert.RowInsertionBuilder;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
-import org.apache.metamodel.membrane.swagger.model.InsertionResponse;
+import org.apache.metamodel.membrane.app.config.JacksonConfig;
+import org.apache.metamodel.membrane.swagger.model.Operator;
+import org.apache.metamodel.membrane.swagger.model.PostDataRequest;
+import org.apache.metamodel.membrane.swagger.model.PostDataRequestDelete;
+import org.apache.metamodel.membrane.swagger.model.PostDataRequestUpdate;
+import org.apache.metamodel.membrane.swagger.model.PostDataResponse;
 import org.apache.metamodel.membrane.swagger.model.QueryResponse;
+import org.apache.metamodel.membrane.swagger.model.WhereCondition;
+import org.apache.metamodel.query.FilterItem;
+import org.apache.metamodel.query.OperatorType;
 import org.apache.metamodel.query.Query;
+import org.apache.metamodel.query.SelectItem;
+import org.apache.metamodel.schema.Column;
 import org.apache.metamodel.schema.Table;
+import org.apache.metamodel.update.RowUpdationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +60,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 @RestController
@@ -80,13 +95,13 @@ public class TableDataController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public InsertionResponse post(@PathVariable("tenant") String tenantId,
+    public PostDataResponse post(@PathVariable("tenant") String tenantId,
             @PathVariable("dataContext") String dataSourceName, @PathVariable("schema") String schemaId,
-            @PathVariable("table") String tableId, @RequestBody final List<Map<String, Object>> inputRecords) {
+            @PathVariable("table") String tableId, @RequestBody PostDataRequest postDataReq) {
 
         final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
-        final UpdateableDataContext dataContext = tenantContext.getDataSourceRegistry().openDataContextForUpdate(
-                dataSourceName);
+        final UpdateableDataContext dataContext =
+                tenantContext.getDataSourceRegistry().openDataContextForUpdate(dataSourceName);
 
         final DataContextTraverser traverser = new DataContextTraverser(dataContext);
 
@@ -95,19 +110,47 @@ public class TableDataController {
         final UpdateSummary result = dataContext.executeUpdate(new UpdateScript() {
             @Override
             public void run(UpdateCallback callback) {
-                for (Map<String, Object> inputMap : inputRecords) {
-                    final RowInsertionBuilder insert = callback.insertInto(table);
-                    for (Entry<String, Object> entry : inputMap.entrySet()) {
-                        insert.value(entry.getKey(), entry.getValue());
+                final List<PostDataRequestUpdate> updateItems = postDataReq.getUpdate();
+                if (updateItems != null) {
+                    for (PostDataRequestUpdate updateItem : updateItems) {
+                        final RowUpdationBuilder updateBuilder = callback.update(table);
+                        setWhere(updateBuilder, table, updateItem.getWhere());
+                        setValues(updateBuilder, updateItem.getValues());
+                        updateBuilder.execute();
                     }
-                    insert.execute();
+                }
+
+                final List<PostDataRequestDelete> deleteItems = postDataReq.getDelete();
+                if (deleteItems != null) {
+                    for (PostDataRequestDelete deleteItem : deleteItems) {
+                        final RowDeletionBuilder deleteBuilder = callback.deleteFrom(table);
+                        setWhere(deleteBuilder, table, deleteItem.getWhere());
+                        deleteBuilder.execute();
+                    }
+                }
+
+                final List<Object> insertItems = postDataReq.getInsert();
+                if (insertItems != null) {
+                    for (Object insertItem : insertItems) {
+                        final RowInsertionBuilder insertBuild = callback.insertInto(table);
+                        setValues(insertBuild, insertItem);
+                        insertBuild.execute();
+                    }
                 }
             }
         });
 
-        final InsertionResponse response = new InsertionResponse();
+        final PostDataResponse response = new PostDataResponse();
         response.status("ok");
 
+        if (result.getDeletedRows().isPresent()) {
+            final Integer deletedRecords = result.getDeletedRows().get();
+            response.deletedRows(new BigDecimal(deletedRecords));
+        }
+        if (result.getUpdatedRows().isPresent()) {
+            final Integer updatedRecords = result.getUpdatedRows().get();
+            response.updatedRows(new BigDecimal(updatedRecords));
+        }
         if (result.getInsertedRows().isPresent()) {
             final Integer insertedRecords = result.getInsertedRows().get();
             response.insertedRows(new BigDecimal(insertedRecords));
@@ -118,5 +161,44 @@ public class TableDataController {
         }
 
         return response;
+    }
+
+    private void setWhere(WhereClauseBuilder<?> whereBuilder, Table table, List<WhereCondition> conditions) {
+        for (WhereCondition condition : conditions) {
+            final Column column = table.getColumnByName(condition.getColumn());
+            if (column == null) {
+                throw new IllegalArgumentException("No such column: " + condition.getColumn());
+            }
+            final OperatorType operator = toOperator(condition.getOperator());
+            final FilterItem filterItem = new FilterItem(new SelectItem(column), operator, condition.getOperand());
+            whereBuilder.where(filterItem);
+        }
+    }
+
+    private OperatorType toOperator(Operator operator) {
+        switch (operator) {
+        case EQ:
+            return OperatorType.EQUALS_TO;
+        case NE:
+            return OperatorType.DIFFERENT_FROM;
+        case GT:
+            return OperatorType.GREATER_THAN;
+        case LT:
+            return OperatorType.LESS_THAN;
+        case LIKE:
+            return OperatorType.LIKE;
+        case NOT_LIKE:
+            return OperatorType.NOT_LIKE;
+        }
+        throw new UnsupportedOperationException("Unsupported operator: " + operator);
+    }
+
+    protected void setValues(RowBuilder<?> rowBuilder, Object values) {
+        final ObjectMapper objectMapper = JacksonConfig.getObjectMapper();
+        @SuppressWarnings("unchecked") final Map<String, ?> inputMap = objectMapper.convertValue(values, Map.class);
+
+        for (Entry<String, ?> entry : inputMap.entrySet()) {
+            rowBuilder.value(entry.getKey(), entry.getValue());
+        }
     }
 }
