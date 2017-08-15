@@ -18,7 +18,6 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +88,7 @@ public class DataSourceController {
         final String tenantName = tenantContext.getTenantName();
         final UriBuilder uriBuilder = UriBuilder.fromPath("/{tenant}/{dataContext}/s/{schema}");
 
-        final List<GetDatasourceResponseSchemas> schemaLinks = Arrays.stream(dataContext.getSchemaNames()).map(s -> {
+        final List<GetDatasourceResponseSchemas> schemaLinks = dataContext.getSchemaNames().stream().map(s -> {
             final String uri = uriBuilder.build(tenantName, dataSourceName, s).toString();
             return new GetDatasourceResponseSchemas().name(s).uri(uri);
         }).collect(Collectors.toList());
