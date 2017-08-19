@@ -18,7 +18,6 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +67,7 @@ public class TableController {
 
         final String tableName = table.getName();
         final String schemaName = table.getSchema().getName();
-        final List<GetTableResponseColumns> columnsLinks = Arrays.stream(table.getColumnNames()).map(c -> {
+        final List<GetTableResponseColumns> columnsLinks = table.getColumnNames().stream().map(c -> {
             final String uri = uriBuilder.build(tenantName, dataSourceName, schemaName, tableName, c).toString();
             return new GetTableResponseColumns().name(c).uri(uri);
         }).collect(Collectors.toList());

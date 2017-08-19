@@ -78,7 +78,7 @@ public class QueryController {
         final List<List<Object>> data = new ArrayList<>();
 
         try (final DataSet dataSet = dataContext.executeQuery(query)) {
-            headers = Arrays.stream(dataSet.getSelectItems()).map((si) -> si.toString()).collect(Collectors.toList());
+            headers = dataSet.getSelectItems().stream().map((si) -> si.toString()).collect(Collectors.toList());
             while (dataSet.next()) {
                 final Object[] values = dataSet.getRow().getValues();
                 data.add(Arrays.asList(values));

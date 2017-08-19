@@ -18,7 +18,6 @@
  */
 package org.apache.metamodel.membrane.controllers;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +64,7 @@ public class SchemaController {
         final UriBuilder uriBuilder = UriBuilder.fromPath("/{tenant}/{dataContext}/s/{schema}/t/{table}");
 
         final String schemaName = schema.getName();
-        final List<GetSchemaResponseTables> tableLinks = Arrays.stream(schema.getTableNames()).map(t -> {
+        final List<GetSchemaResponseTables> tableLinks = schema.getTableNames().stream().map(t -> {
             final String uri = uriBuilder.build(tenantName, dataSourceName, schemaName, t).toString();
             return new GetSchemaResponseTables().name(String.valueOf(t)).uri(uri);
         }).collect(Collectors.toList());
