@@ -42,7 +42,7 @@ under the License.
 	<url>http://metamodel.apache.org</url>
 	<inceptionYear>2017</inceptionYear>
 	<packaging>pom</packaging>
-	
+
 	<profiles>
 		<profile>
 			<id>all</id>
@@ -65,6 +65,51 @@ under the License.
 			</modules>
 		</profile>
 	</profiles>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.rat</groupId>
+					<artifactId>apache-rat-plugin</artifactId>
+					<configuration>
+						<licenses>
+							<license
+								implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+								<licenseFamilyCategory>ASL20</licenseFamilyCategory>
+								<licenseFamilyName>Apache Software License, 2.0</licenseFamilyName>
+								<notes>Single licensed ASL v2.0</notes>
+								<patterns>
+									<pattern>Licensed to the Apache Software Foundation (ASF) under
+										one
+										or more contributor license agreements.</pattern>
+								</patterns>
+							</license>
+						</licenses>
+						<excludeSubProjects>false</excludeSubProjects>
+						<excludes>
+							<exclude>KEYS</exclude>
+							<exclude>**/*.md</exclude>
+							<exclude>**/*.json</exclude>
+							<exclude>**/.gitignore/**</exclude>
+							<exclude>.git/**</exclude>
+							<exclude>.gitattributes</exclude>
+							<exclude>**/.project</exclude>
+							<exclude>**/.classpath</exclude>
+							<exclude>**/.settings/**</exclude>
+							<exclude>**/.vscode/**</exclude>
+							<exclude>**/.travis.yml</exclude>
+							<exclude>**/target/**</exclude>
+							<exclude>**/*.iml/**</exclude>
+							<exclude>**/*.iws/**</exclude>
+							<exclude>**/*.ipr/**</exclude>
+							<exclude>**/.idea/**</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>

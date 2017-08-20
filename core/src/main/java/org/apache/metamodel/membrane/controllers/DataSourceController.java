@@ -65,11 +65,6 @@ public class DataSourceController {
         map.putAll(dataContextDefinition.getProperties());
         map.put(DataContextPropertiesImpl.PROPERTY_DATA_CONTEXT_TYPE, dataContextDefinition.getType());
 
-        if (!map.containsKey(DataContextPropertiesImpl.PROPERTY_DATABASE)) {
-            // add the data source ID as database name if it is not already set.
-            map.put(DataContextPropertiesImpl.PROPERTY_DATABASE, dataSourceId);
-        }
-
         final DataContextProperties properties = new DataContextPropertiesImpl(map);
 
         final String dataContextIdentifier = tenantRegistry.getTenantContext(tenantId).getDataSourceRegistry()

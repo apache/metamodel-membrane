@@ -77,7 +77,7 @@ public class TenantInteractionScenarioTest {
         // create datasource
         {
             final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/tenant1/mydata").content(
-                    "{'type':'pojo','table-defs':'hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);'}"
+                    "{'type':'pojo','database':'mydata','table-defs':'hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);'}"
                             .replace('\'', '"')).contentType(MediaType.APPLICATION_JSON)).andExpect(
                                     MockMvcResultMatchers.status().isOk()).andReturn();
 
@@ -185,8 +185,8 @@ public class TenantInteractionScenarioTest {
         // query metadata from information_schema
         {
             final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/tenant1/mydata/q?sql={sql}",
-                    "SELECT greeting, who AS who_is_it FROM hello_world")).andExpect(MockMvcResultMatchers.status()
-                            .isOk()).andReturn();
+                    "SELECT greeting, who AS who_is_it FROM hello_world"))
+                    .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
             final String content = result.getResponse().getContentAsString();
             final Map<?, ?> map = new ObjectMapper().readValue(content, Map.class);
