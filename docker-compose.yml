@@ -19,8 +19,23 @@ services:
   metamodel-membrane:
     container_name: metamodel-membrane
     image: metamodel-membrane
-    build: undertow
+    build: .
     ports:
     - "8080:8080"
     environment:
     - MEMBRANE_HTTP_PORT=8080
+  example-postgres:
+    container_name: example-postgres
+    image: postgres:9.6
+    environment:
+    - POSTGRES_USER=membrane
+    - POSTGRES_PASSWORD=secret
+    - POSTGRES_DB=membrane
+  example-couchdb:
+    container_name: example-couchdb
+    image: couchdb:1.6
+    environment:
+    - COUCHDB_USER=membrane
+    - COUCHDB_PASSWORD=secret
+    ports:
+    - 5984:5984
