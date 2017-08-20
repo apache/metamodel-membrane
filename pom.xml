@@ -42,12 +42,29 @@ under the License.
 	<url>http://metamodel.apache.org</url>
 	<inceptionYear>2017</inceptionYear>
 	<packaging>pom</packaging>
-	<modules>
-		<module>swagger-codegen</module>
-		<module>core</module>
-		<module>war</module>
-		<module>undertow</module>
-	</modules>
+	
+	<profiles>
+		<profile>
+			<id>all</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>war</module>
+				<module>undertow</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>dockerbuild</id>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>undertow</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
