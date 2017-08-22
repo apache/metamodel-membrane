@@ -36,6 +36,8 @@ public interface DataSourceRegistry {
 
     public String registerDataSource(String dataSourceName, DataContextProperties dataContextProperties) throws DataSourceAlreadyExistException;
 
+    public void removeDataSource(String dataSourceName) throws NoSuchDataSourceException;
+    
     public DataContext openDataContext(String dataSourceName) throws NoSuchDataSourceException;
 
     public default UpdateableDataContext openDataContextForUpdate(String dataSourceName) {
@@ -44,5 +46,5 @@ public interface DataSourceRegistry {
             return (UpdateableDataContext) dataContext;
         }
         throw new DataSourceNotUpdateableException(dataSourceName);
-    };
+    }
 }

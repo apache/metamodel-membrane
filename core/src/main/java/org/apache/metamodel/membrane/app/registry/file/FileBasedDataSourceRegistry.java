@@ -114,9 +114,25 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
             throw new UncheckedIOException(e);
         }
 
-        final DataContextSupplier supplier = new DataContextSupplier(dataSourceName, dataSource
-                .toDataContextProperties());
+        final DataContextSupplier supplier =
+                new DataContextSupplier(dataSourceName, dataSource.toDataContextProperties());
         return supplier.get();
+    }
+
+    @Override
+    public void removeDataSource(String dataSourceName) throws NoSuchDataSourceException {
+        if (Strings.isNullOrEmpty(dataSourceName)) {
+            throw new IllegalArgumentException("DataSource name cannot be null or empty");
+        }
+        final File file = getDataSourceFile(dataSourceName);
+        if (!file.exists()) {
+            throw new NoSuchDataSourceException(dataSourceName);
+        }
+
+        final boolean deleted = file.delete();
+        if (!deleted) {
+            throw new UncheckedIOException(new IOException("Unable to delete file: " + file));
+        }
     }
 
 }

@@ -107,4 +107,9 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
         }
     }
 
+    @Override
+    public void removeDataSource(String dataSourceName) throws NoSuchDataSourceException {
+        delegate.removeDataSource(dataSourceName);
+        loadingCache.invalidate(dataSourceName);
+    }
 }

@@ -116,6 +116,16 @@ paths:
           description: Datasource created
           schema:
             $ref: "#/definitions/getDatasourceResponse"
+    delete:
+      responses:
+        200:
+          description: Datasource deleted
+          schema:
+            $ref: "#/definitions/deleteDatasourceResponse"
+        404:
+          description: Datasource not found
+          schema:
+            $ref: "#/definitions/error"
   /{tenant}/{datasource}/q:
     parameters:
       - name: tenant
@@ -539,6 +549,18 @@ definitions:
               type: string
               description: A link to the schema information
               format: uri
+  deleteDatasourceResponse:
+    type: object
+    properties:
+      type:
+        type: string
+        description: The type of entity (datasource)
+      name:
+        type: string
+        description: The datasource name/identifier
+      deleted:
+        type: boolean
+        description: A confirmation boolean to indicate that the deletion is effectuated.
   getSchemaResponse:
     type: object
     properties:

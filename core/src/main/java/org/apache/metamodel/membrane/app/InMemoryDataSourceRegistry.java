@@ -62,4 +62,12 @@ public class InMemoryDataSourceRegistry implements DataSourceRegistry {
         return supplier.get();
     }
 
+    @Override
+    public void removeDataSource(String dataSourceName) throws NoSuchDataSourceException {
+        if (!dataSources.containsKey(dataSourceName)) {
+            throw new NoSuchDataSourceException(dataSourceName);
+        }
+        dataSources.remove(dataSourceName);
+    }
+
 }

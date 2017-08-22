@@ -30,11 +30,15 @@ import org.apache.metamodel.DataContext;
 import org.apache.metamodel.UpdateableDataContext;
 import org.apache.metamodel.factory.DataContextProperties;
 import org.apache.metamodel.factory.DataContextPropertiesImpl;
+import org.apache.metamodel.membrane.app.DataSourceRegistry;
 import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
+import org.apache.metamodel.membrane.swagger.model.DeleteDatasourceResponse;
 import org.apache.metamodel.membrane.swagger.model.GetDatasourceResponse;
 import org.apache.metamodel.membrane.swagger.model.GetDatasourceResponseSchemas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +51,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/{tenant}/{datasource}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DataSourceController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceController.class);
 
     private final TenantRegistry tenantRegistry;
 
@@ -72,10 +78,12 @@ public class DataSourceController {
 
         final DataContextProperties properties = new DataContextPropertiesImpl(map);
 
-        final String dataContextIdentifier = tenantRegistry.getTenantContext(tenantId).getDataSourceRegistry()
+        final String dataSourceIdentifier = tenantRegistry.getTenantContext(tenantId).getDataSourceRegistry()
                 .registerDataSource(dataSourceId, properties);
 
-        return get(tenantId, dataContextIdentifier);
+        logger.info("Created data source: {}/{}", tenantId, dataSourceIdentifier);
+
+        return get(tenantId, dataSourceIdentifier);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -98,9 +106,22 @@ public class DataSourceController {
         resp.name(dataSourceName);
         resp.tenant(tenantName);
         resp.updateable(dataContext instanceof UpdateableDataContext);
-        resp.queryUri(UriBuilder.fromPath("/{tenant}/{dataContext}/query").build(tenantName, dataSourceName)
-                .toString());
+        resp.queryUri(
+                UriBuilder.fromPath("/{tenant}/{dataContext}/query").build(tenantName, dataSourceName).toString());
         resp.schemas(schemaLinks);
         return resp;
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody
+    public DeleteDatasourceResponse delete(@PathVariable("tenant") String tenantId,
+            @PathVariable("datasource") String dataSourceName) {
+        final TenantContext tenantContext = tenantRegistry.getTenantContext(tenantId);
+        final DataSourceRegistry dataSourceRegistry = tenantContext.getDataSourceRegistry();
+        dataSourceRegistry.removeDataSource(dataSourceName);
+
+        logger.info("Deleted data source: {}/{}", tenantId, dataSourceName);
+
+        return new DeleteDatasourceResponse().deleted(true).type("datasource").name(dataSourceName);
     }
 }
