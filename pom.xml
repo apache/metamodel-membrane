@@ -45,7 +45,8 @@ under the License.
 
 	<profiles>
 		<profile>
-			<id>all</id>
+			<!-- Normal profile for a build on a machine without specific tools like Docker or Newman installed -->
+			<id>normal</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -57,11 +58,23 @@ under the License.
 			</modules>
 		</profile>
 		<profile>
+			<!-- Minimal profile for running just the docker image build -->
 			<id>dockerbuild</id>
 			<modules>
 				<module>swagger-codegen</module>
 				<module>core</module>
 				<module>undertow</module>
+			</modules>
+		</profile>
+		<profile>
+			<!-- Build profile for running everything - requires docker and newman installed -->
+			<id>full</id>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>war</module>
+				<module>undertow</module>
+				<module>postman-tests</module>
 			</modules>
 		</profile>
 	</profiles>

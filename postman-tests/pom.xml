@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.apache.metamodel.membrane</groupId>
+		<artifactId>Membrane-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>Membrane-postman-tests</artifactId>
+	<packaging>pom</packaging>
+	
+	<properties>
+		<compose.args>--build</compose.args>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Add the docker-maven-plugin to make the "${docker.host.address}" 
+					variable resolveable -->
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.21.0</version>
+				<executions>
+					<execution>
+						<id>start-docker-on-pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<phase>pre-integration-test</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>determine-postman-env</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<!-- Use ant to determine the right value for 'postman.env' -->
+							<exportAntProperties>true</exportAntProperties>
+							<target>
+								<condition property="postman.env" value="docker-toolbox"
+									else="localhost">
+									<equals arg1="${docker.host.address}" arg2="192.168.99.100" />
+								</condition>
+								<echo message="Using postman environment: ${postman.env}" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.5.0</version>
+				<executions>
+					<execution>
+						<id>docker-compose-up</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>docker-compose</executable>
+							<commandlineArgs>
+							<![CDATA[
+							-f ../docker-compose.yml up -d ${compose.args}
+							]]>
+							</commandlineArgs>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>newman-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<executable>bash</executable>
+							<commandlineArgs>
+							<![CDATA[
+			                -c "newman run ./Membrane.postman_collection.json \
+			                -e ./environments/${postman.env}.postman_environment.json \
+			                --reporters junit,cli -x \
+			                --reporter-junit-export ./target/NewmanTestResults.xml"
+			                ]]>
+							</commandlineArgs>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>docker-logs</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>bash</executable>
+							<commandlineArgs>
+				            <![CDATA[
+				            -c "docker logs metamodel-membrane > target/docker-membrane.log"
+				            ]]>
+							</commandlineArgs>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>docker-compose-down</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>docker-compose</executable>
+							<commandlineArgs>
+				            <![CDATA[
+				            -f ../docker-compose.yml down
+				            ]]>
+							</commandlineArgs>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>newman-verify</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<executable>grep</executable>
+							<commandlineArgs>
+				            <![CDATA[
+				            -q 'error\|failure' ./target/NewmanTestResults.xml
+				            ]]>
+							</commandlineArgs>
+							<successCodes>
+								<successCode>1</successCode>
+							</successCodes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.kuali.maven.plugins</groupId>
+				<artifactId>maven-http-plugin</artifactId>
+				<version>1.0.5</version>
+
+				<configuration>
+					<httpSuccessCodes>200</httpSuccessCodes>
+					<httpContinueWaitingCodes>500</httpContinueWaitingCodes>
+					<requestTimeout>12000</requestTimeout>
+					<sleepInterval>4000</sleepInterval>
+					<timeout>120000</timeout>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>membrane-health-check</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>wait</goal>
+						</goals>
+						<configuration>
+							<url>http://${docker.host.address}:8080</url>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
