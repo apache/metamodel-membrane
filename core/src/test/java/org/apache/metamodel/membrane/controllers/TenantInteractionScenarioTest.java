@@ -48,14 +48,14 @@ public class TenantInteractionScenarioTest {
 
         final TenantRegistry tenantRegistry = new InMemoryTenantRegistry();
         final TenantController tenantController = new TenantController(tenantRegistry);
-        final DataSourceController dataContextController = new DataSourceController(tenantRegistry);
+        final DataSourceController dataSourceController = new DataSourceController(tenantRegistry);
         final SchemaController schemaController = new SchemaController(tenantRegistry);
         final TableController tableController = new TableController(tenantRegistry);
         final ColumnController columnController = new ColumnController(tenantRegistry);
         final QueryController queryController = new QueryController(tenantRegistry);
         final TableDataController tableDataController = new TableDataController(tenantRegistry);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(tenantController, dataContextController, schemaController,
+        mockMvc = MockMvcBuilders.standaloneSetup(tenantController, dataSourceController, schemaController,
                 tableController, columnController, queryController, tableDataController).setMessageConverters(
                         messageConverter).build();
     }

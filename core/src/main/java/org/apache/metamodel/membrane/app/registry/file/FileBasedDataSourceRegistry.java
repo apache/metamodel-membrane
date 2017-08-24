@@ -114,9 +114,14 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
             throw new UncheckedIOException(e);
         }
 
-        final DataContextSupplier supplier = new DataContextSupplier(dataSourceName, dataSource
-                .toDataContextProperties());
+        final DataContextSupplier supplier =
+                new DataContextSupplier(dataSourceName, dataSource.toDataContextProperties());
         return supplier.get();
     }
 
+    @Override
+    public DataContext openDataContext(DataContextProperties properties) {
+        final DataContextSupplier supplier = new DataContextSupplier(null, properties);
+        return supplier.get();
+    }
 }

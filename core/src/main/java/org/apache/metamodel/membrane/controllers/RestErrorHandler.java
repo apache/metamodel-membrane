@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.metamodel.membrane.app.exceptions.AbstractIdentifierNamingException;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceNotUpdateableException;
+import org.apache.metamodel.membrane.app.exceptions.InvalidDataSourceException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchColumnException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchSchemaException;
@@ -128,6 +129,21 @@ public class RestErrorHandler {
     public RestErrorResponse processDataSourceNotUpdateable(DataSourceNotUpdateableException ex) {
         return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "DataSource not updateable: " + ex
                 .getDataSourceName());
+    }
+    
+    /**
+     * DataSource invalid exception handler method - mapped to
+     * BAD_REQUEST.
+     * 
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(InvalidDataSourceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public RestErrorResponse processDataSourceNotUpdateable(InvalidDataSourceException ex) {
+        return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "DataSource invalid: " + ex
+                .getMessage());
     }
 
     /**

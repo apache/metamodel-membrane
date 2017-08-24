@@ -34,15 +34,48 @@ public interface DataSourceRegistry {
 
     public List<String> getDataSourceNames();
 
-    public String registerDataSource(String dataSourceName, DataContextProperties dataContextProperties) throws DataSourceAlreadyExistException;
+    /**
+     * 
+     * @param dataSourceName
+     * @param dataContextProperties
+     * @return the identifier/name for the data source.
+     * @throws DataSourceAlreadyExistException
+     */
+    public String registerDataSource(String dataSourceName, DataContextProperties dataContextProperties)
+            throws DataSourceAlreadyExistException;
 
+    /**
+     * Opens a {@link DataContext} that exists in the registry.
+     * 
+     * @param dataSourceName
+     * @return
+     * @throws NoSuchDataSourceException
+     */
     public DataContext openDataContext(String dataSourceName) throws NoSuchDataSourceException;
 
-    public default UpdateableDataContext openDataContextForUpdate(String dataSourceName) {
+    /**
+     * Opens a {@link DataContext} based on a set of {@link DataContextProperties}. This allows you to instantiate a
+     * data source without necesarily having registered it (yet).
+     * 
+     * @param properties
+     * @return
+     */
+    public DataContext openDataContext(DataContextProperties properties);
+
+    /**
+     * Opens a {@link UpdateableDataContext} that exists in the registry.
+     * 
+     * @param dataSourceName
+     * @return
+     * @throws DataSourceNotUpdateableException
+     */
+    public default UpdateableDataContext openDataContextForUpdate(String dataSourceName)
+            throws DataSourceNotUpdateableException {
         final DataContext dataContext = openDataContext(dataSourceName);
         if (dataContext instanceof UpdateableDataContext) {
             return (UpdateableDataContext) dataContext;
         }
         throw new DataSourceNotUpdateableException(dataSourceName);
-    };
+    }
+
 }

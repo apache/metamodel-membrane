@@ -105,17 +105,27 @@ paths:
             $ref: "#/definitions/error"
     put:
       parameters:
+        - name: validate
+          in: query
+          description: Whether or not to validate the datasource properties and reject creating the datasource if it cannot be created.
+          required: false
+          type: boolean
+          default: false
         - name: inputData
           in: body
           description: The definition of the datasource using properties. The same properties as normally applied in MetaModel factories (e.g. 'type', 'resource', 'url', 'driver-class' ,'hostname', 'port', 'catalog', 'database', 'username', 'port', 'table-defs') are used here.
           required: true
           schema:
-            $ref: "#/definitions/putDatasourceResponse"
+            $ref: "#/definitions/putDatasourceRequest"
       responses:
         200:
           description: Datasource created
           schema:
             $ref: "#/definitions/getDatasourceResponse"
+        400:
+          description: Datasource validation failed
+          schema:
+            $ref: "#/definitions/error"
   /{tenant}/{datasource}/q:
     parameters:
       - name: tenant
@@ -499,7 +509,7 @@ definitions:
         description: An array of generated keys for the records, if any
         items:
           type: object
-  putDatasourceResponse:
+  putDatasourceRequest:
     type: object
     properties:
       type:

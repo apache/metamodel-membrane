@@ -36,14 +36,13 @@ import com.google.common.cache.RemovalNotification;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
- * A wrapper that adds a cache around a {@link DataSourceRegistry} in order to
- * prevent re-connecting all the time to the same data source.
+ * A wrapper that adds a cache around a {@link DataSourceRegistry} in order to prevent re-connecting all the time to the
+ * same data source.
  */
 public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
 
     /**
-     * The default timeout (in seconds) before the cache evicts and closes the
-     * created {@link DataContext}s.
+     * The default timeout (in seconds) before the cache evicts and closes the created {@link DataContext}s.
      */
     public static final int DEFAULT_TIMEOUT_SECONDS = 60;
 
@@ -57,8 +56,8 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
     public CachedDataSourceRegistryWrapper(final DataSourceRegistry delegate, final long cacheTimeout,
             final TimeUnit cacheTimeoutUnit) {
         this.delegate = delegate;
-        this.loadingCache = CacheBuilder.newBuilder().expireAfterAccess(cacheTimeout, cacheTimeoutUnit).removalListener(
-                createRemovalListener()).build(createCacheLoader());
+        this.loadingCache = CacheBuilder.newBuilder().expireAfterAccess(cacheTimeout, cacheTimeoutUnit)
+                .removalListener(createRemovalListener()).build(createCacheLoader());
     }
 
     private RemovalListener<String, DataContext> createRemovalListener() {
@@ -102,9 +101,14 @@ public class CachedDataSourceRegistryWrapper implements DataSourceRegistry {
             if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
             }
-            throw new MetaModelException("Unexpected error happened while getting DataContext '" + dataSourceName
-                    + "' from cache", e);
+            throw new MetaModelException(
+                    "Unexpected error happened while getting DataContext '" + dataSourceName + "' from cache", e);
         }
+    }
+
+    @Override
+    public DataContext openDataContext(DataContextProperties properties) {
+        return delegate.openDataContext(properties);
     }
 
 }
