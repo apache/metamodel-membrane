@@ -42,12 +42,87 @@ under the License.
 	<url>http://metamodel.apache.org</url>
 	<inceptionYear>2017</inceptionYear>
 	<packaging>pom</packaging>
-	<modules>
-		<module>swagger-codegen</module>
-		<module>core</module>
-		<module>war</module>
-		<module>undertow</module>
-	</modules>
+
+	<profiles>
+		<profile>
+			<!-- Normal profile for a build on a machine without specific tools like Docker or Newman installed -->
+			<id>normal</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>war</module>
+				<module>undertow</module>
+			</modules>
+		</profile>
+		<profile>
+			<!-- Minimal profile for running just the docker image build -->
+			<id>dockerbuild</id>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>undertow</module>
+			</modules>
+		</profile>
+		<profile>
+			<!-- Build profile for running everything - requires docker and newman installed -->
+			<id>full</id>
+			<modules>
+				<module>swagger-codegen</module>
+				<module>core</module>
+				<module>war</module>
+				<module>undertow</module>
+				<module>postman-tests</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.rat</groupId>
+					<artifactId>apache-rat-plugin</artifactId>
+					<configuration>
+						<licenses>
+							<license
+								implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+								<licenseFamilyCategory>ASL20</licenseFamilyCategory>
+								<licenseFamilyName>Apache Software License, 2.0</licenseFamilyName>
+								<notes>Single licensed ASL v2.0</notes>
+								<patterns>
+									<pattern>Licensed to the Apache Software Foundation (ASF) under
+										one
+										or more contributor license agreements.</pattern>
+								</patterns>
+							</license>
+						</licenses>
+						<excludeSubProjects>false</excludeSubProjects>
+						<excludes>
+							<exclude>KEYS</exclude>
+							<exclude>**/*.md</exclude>
+							<exclude>**/*.json</exclude>
+							<exclude>**/.gitignore/**</exclude>
+							<exclude>.git/**</exclude>
+							<exclude>.gitattributes</exclude>
+							<exclude>**/.project</exclude>
+							<exclude>**/.classpath</exclude>
+							<exclude>**/.settings/**</exclude>
+							<exclude>**/.vscode/**</exclude>
+							<exclude>**/.travis.yml</exclude>
+							<exclude>**/target/**</exclude>
+							<exclude>**/*.iml/**</exclude>
+							<exclude>**/*.iws/**</exclude>
+							<exclude>**/*.ipr/**</exclude>
+							<exclude>**/.idea/**</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>

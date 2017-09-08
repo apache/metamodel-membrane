@@ -1,10 +1,18 @@
 sudo: false
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 
-after_success:
-  - mvn test javadoc:javadoc
+services:
+- docker
+
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get install npm
+- sudo npm install newman --global;
+
+script:
+- mvn clean install -Pfull
 
 notifications:
   email: false

@@ -70,4 +70,8 @@ public class InMemoryDataSourceRegistry implements DataSourceRegistry {
         dataSources.remove(dataSourceName);
     }
 
+    public DataContext openDataContext(DataContextProperties properties) {
+        final DataContextSupplier supplier = new DataContextSupplier(null, properties);
+        return supplier.get();
+    }
 }

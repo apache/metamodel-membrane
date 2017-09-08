@@ -135,4 +135,8 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
         }
     }
 
+    public DataContext openDataContext(DataContextProperties properties) {
+        final DataContextSupplier supplier = new DataContextSupplier(null, properties);
+        return supplier.get();
+    }
 }

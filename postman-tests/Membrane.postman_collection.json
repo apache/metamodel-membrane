@@ -1,0 +1,202 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Membrane",
+		"_postman_id": "084c91ce-fccc-8fc4-a3c4-1dc5d5b41388",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create my-tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get my-tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create my-tenant/example-pojo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"is updateable\"] = jsonData.updateable;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant/example-pojo",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create my-tenant/example-postgres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"is updateable\"] = jsonData.updateable;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant/example-postgres",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"jdbc\",\n    \"url\": \"jdbc:postgresql://example-postgres/membrane\",\n    \"username\": \"membrane\",\n    \"password\": \"secret\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create my-tenant/example-couchdb",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"is updateable\"] = jsonData.updateable;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant/example-couchdb",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"couchdb\",\n    \"hostname\": \"example-couchdb\",\n    \"username\": \"membrane\",\n    \"password\": \"secret\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete my-tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";",
+							"tests[\"deleted is true\"] = jsonData.deleted;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/my-tenant",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
