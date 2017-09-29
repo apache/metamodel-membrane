@@ -90,7 +90,7 @@ public class DataSourceController {
 
         final String dataSourceIdentifier = dataSourceRegistry.registerDataSource(dataSourceId, properties);
 
-        logger.info("Created data source: {}/{}", tenantId, dataSourceIdentifier);
+        logger.info("{}/{} - Created data source", tenantId, dataSourceIdentifier);
 
         return get(tenantId, dataSourceIdentifier);
     }
@@ -139,7 +139,7 @@ public class DataSourceController {
         final DataSourceRegistry dataSourceRegistry = tenantContext.getDataSourceRegistry();
         dataSourceRegistry.removeDataSource(dataSourceName);
 
-        logger.info("Deleted data source: {}/{}", tenantId, dataSourceName);
+        logger.info("{}/{} - Deleted data source", tenantId, dataSourceName);
 
         return new DeleteDatasourceResponse().deleted(true).type("datasource").name(dataSourceName);
     }

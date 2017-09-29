@@ -29,6 +29,8 @@ import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.swagger.model.DeleteTenantResponse;
 import org.apache.metamodel.membrane.swagger.model.GetTenantResponse;
 import org.apache.metamodel.membrane.swagger.model.GetTenantResponseDatasources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/{tenant}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TenantController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TenantController.class);
     private final TenantRegistry tenantRegistry;
 
     @Autowired
@@ -75,6 +78,8 @@ public class TenantController {
         final TenantContext tenantContext = tenantRegistry.createTenantContext(tenantName);
         final String tenantIdentifier = tenantContext.getTenantName();
 
+        logger.info("{} - Created tenant", tenantIdentifier);
+
         final GetTenantResponse resp = new GetTenantResponse();
         resp.type("tenant");
         resp.name(tenantIdentifier);
@@ -86,6 +91,8 @@ public class TenantController {
     @ResponseBody
     public DeleteTenantResponse deleteTenant(@PathVariable("tenant") String tenantName) {
         tenantRegistry.deleteTenantContext(tenantName);
+
+        logger.info("{} - Deleted tenant", tenantName);
 
         final DeleteTenantResponse resp = new DeleteTenantResponse();
         resp.type("tenant");

@@ -2,11 +2,36 @@
 	"variables": [],
 	"info": {
 		"name": "Membrane",
-		"_postman_id": "084c91ce-fccc-8fc4-a3c4-1dc5d5b41388",
+		"_postman_id": "1265d16a-b1fd-26a4-7ea5-d2e4015df97e",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Get swagger file",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"title is Apache MetaModel Membrane\"] = jsonData.info.title === \"Apache MetaModel Membrane\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/swagger.json",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
 		{
 			"name": "Create my-tenant",
 			"event": [
@@ -18,7 +43,10 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";"
+							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";",
+							"",
+							"postman.setGlobalVariable(\"membrane_tenant\", jsonData.name);",
+							""
 						]
 					}
 				}
@@ -42,7 +70,7 @@
 			"response": []
 		},
 		{
-			"name": "Get my-tenant",
+			"name": "Get tenant info",
 			"event": [
 				{
 					"listen": "test",
@@ -58,7 +86,7 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/my-tenant",
+				"url": "{{baseUrl}}/{{membrane_tenant}}",
 				"method": "GET",
 				"header": [],
 				"body": {},
@@ -67,7 +95,7 @@
 			"response": []
 		},
 		{
-			"name": "Create my-tenant/example-pojo",
+			"name": "Create data source - postgres",
 			"event": [
 				{
 					"listen": "test",
@@ -78,48 +106,16 @@
 							"",
 							"var jsonData = JSON.parse(responseBody);",
 							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
-							"tests[\"is updateable\"] = jsonData.updateable;"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "{{baseUrl}}/my-tenant/example-pojo",
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Create my-tenant/example-postgres",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"is updateable\"] = jsonData.updateable;",
 							"",
-							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
-							"tests[\"is updateable\"] = jsonData.updateable;"
+							"postman.setGlobalVariable(\"membrane_data_source\", jsonData.name);",
+							""
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/my-tenant/example-postgres",
+				"url": "{{baseUrl}}/{{membrane_tenant}}/example-postgres",
 				"method": "PUT",
 				"header": [
 					{
@@ -137,7 +133,7 @@
 			"response": []
 		},
 		{
-			"name": "Create my-tenant/example-couchdb",
+			"name": "Create data source - couchdb",
 			"event": [
 				{
 					"listen": "test",
@@ -148,13 +144,16 @@
 							"",
 							"var jsonData = JSON.parse(responseBody);",
 							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
-							"tests[\"is updateable\"] = jsonData.updateable;"
+							"tests[\"is updateable\"] = jsonData.updateable;",
+							"",
+							"postman.setGlobalVariable(\"membrane_data_source\", jsonData.name);",
+							""
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/my-tenant/example-couchdb",
+				"url": "{{baseUrl}}/{{membrane_tenant}}/example-couchdb",
 				"method": "PUT",
 				"header": [
 					{
@@ -172,7 +171,363 @@
 			"response": []
 		},
 		{
-			"name": "Delete my-tenant",
+			"name": "Create data source - pojo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"is updateable\"] = jsonData.updateable;",
+							"",
+							"postman.setGlobalVariable(\"membrane_data_source\", jsonData.name);",
+							"postman.setGlobalVariable(\"membrane_schema\", \"Schema\");",
+							"postman.setGlobalVariable(\"membrane_table\", \"foo\");",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/example-pojo",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get data source info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"",
+							"// find the first non-information schema",
+							"var schemas = jsonData.schemas;",
+							"for (var i=0; i<schemas.length; i++) {",
+							"    if (schemas[i].name !== \"information_schema\") {",
+							"        postman.setGlobalVariable(\"membrane_schema\", schemas[i].name);",
+							"        break;",
+							"    }",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get schema info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is schema\"] = jsonData.type === \"schema\";",
+							"",
+							"// find the first non-information schema",
+							"var tables = jsonData.tables;",
+							"for (var i=0; i<tables.length; i++) {",
+							"    postman.setGlobalVariable(\"membrane_table\", tables[i].name);",
+							"    break;",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get table info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is table\"] = jsonData.type === \"table\";",
+							"",
+							"// find the first non-information schema",
+							"var columns = jsonData.columns;",
+							"for (var i=0; i<columns.length; i++) {",
+							"    postman.setGlobalVariable(\"membrane_column\", columns[i].name);",
+							"    break;",
+							"}",
+							"",
+							"postman.setGlobalVariable(\"membrane_column_count\", columns.length);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add table data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"status is ok\"] = jsonData.status === \"ok\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"insert\": [\n\t\t{\n\t\t\t\"bar\": 42,\n\t\t\t\"baz\": null\n\t\t}\n\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get table data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is dataset\"] = jsonData.type === \"dataset\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Query table data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is dataset\"] = jsonData.type === \"dataset\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/q?sql=SELECT * FROM {{membrane_table}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"q"
+					],
+					"query": [
+						{
+							"key": "sql",
+							"value": "SELECT * FROM {{membrane_table}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get column info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is column\"] = jsonData.type === \"column\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/c/{{membrane_column}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data source",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"deleted is true\"] = jsonData.deleted;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete tenant",
 			"event": [
 				{
 					"listen": "test",
@@ -190,7 +545,7 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/my-tenant",
+				"url": "{{baseUrl}}/{{membrane_tenant}}",
 				"method": "DELETE",
 				"header": [],
 				"body": {},
