@@ -18,7 +18,7 @@ version: '2'
 services:
   metamodel-membrane:
     container_name: metamodel-membrane
-    image: metamodel-membrane
+    image: apache/metamodel-membrane
     build: .
     ports:
     - "8080:8080"
