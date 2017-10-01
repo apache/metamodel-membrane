@@ -29,6 +29,8 @@ import org.apache.metamodel.membrane.app.TenantContext;
 import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.swagger.model.QueryResponse;
 import org.apache.metamodel.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +41,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = { "/{tenant}/{dataContext}/query",
-        "/{tenant}/{dataContext}/q" }, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = { "/{tenant}/{dataContext}/query", "/{tenant}/{dataContext}/q" },
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class QueryController {
+
+    private static final Logger logger = LoggerFactory.getLogger(QueryController.class);
 
     private final TenantRegistry tenantRegistry;
 
@@ -62,10 +66,11 @@ public class QueryController {
 
         final Query query = dataContext.parseQuery(queryString);
 
-        return executeQuery(dataContext, query, offset, limit);
+        return executeQuery(tenantContext, dataSourceName, dataContext, query, offset, limit);
     }
 
-    public static QueryResponse executeQuery(DataContext dataContext, Query query, Integer offset, Integer limit) {
+    public static QueryResponse executeQuery(TenantContext tenant, String dataSource, DataContext dataContext,
+            Query query, Integer offset, Integer limit) {
 
         if (offset != null) {
             query.setFirstRow(offset);
@@ -73,6 +78,8 @@ public class QueryController {
         if (limit != null) {
             query.setMaxRows(limit);
         }
+
+        logger.info("{}/{} - Executing query: {}", tenant.getTenantName(), dataSource, query);
 
         final List<String> headers;
         final List<List<Object>> data = new ArrayList<>();

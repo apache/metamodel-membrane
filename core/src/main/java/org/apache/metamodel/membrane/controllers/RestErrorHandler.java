@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.metamodel.membrane.app.exceptions.AbstractIdentifierNamingException;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceNotUpdateableException;
@@ -35,6 +37,8 @@ import org.apache.metamodel.membrane.app.exceptions.NoSuchTenantException;
 import org.apache.metamodel.membrane.app.exceptions.TenantAlreadyExistException;
 import org.apache.metamodel.membrane.controllers.model.RestErrorResponse;
 import org.apache.metamodel.query.parser.QueryParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,9 +52,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class RestErrorHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(RestErrorHandler.class);
+
     /**
-     * Method binding issues (raised by Spring framework) - mapped to
-     * BAD_REQUEST.
+     * Method binding issues (raised by Spring framework) - mapped to BAD_REQUEST.
      * 
      * @param ex
      * @return
@@ -70,8 +75,8 @@ public class RestErrorHandler {
         final List<FieldError> fieldErrors = result.getFieldErrors();
         final Map<String, Object> fieldErrorsMap = new LinkedHashMap<>();
         for (FieldError fieldError : fieldErrors) {
-            fieldErrorsMap.put(fieldError.getObjectName() + '.' + fieldError.getField(), fieldError
-                    .getDefaultMessage());
+            fieldErrorsMap.put(fieldError.getObjectName() + '.' + fieldError.getField(),
+                    fieldError.getDefaultMessage());
         }
 
         final Map<String, Object> additionalDetails = new LinkedHashMap<>();
@@ -81,8 +86,8 @@ public class RestErrorHandler {
         if (!fieldErrorsMap.isEmpty()) {
             additionalDetails.put("field-errors", fieldErrorsMap);
         }
-        final RestErrorResponse errorResponse = new RestErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                "Failed to validate request");
+        final RestErrorResponse errorResponse =
+                new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "Failed to validate request");
         if (!additionalDetails.isEmpty()) {
             errorResponse.setAdditionalDetails(additionalDetails);
         }
@@ -117,8 +122,7 @@ public class RestErrorHandler {
     }
 
     /**
-     * DataSource not updateable exception handler method - mapped to
-     * BAD_REQUEST.
+     * DataSource not updateable exception handler method - mapped to BAD_REQUEST.
      * 
      * @param ex
      * @return
@@ -127,13 +131,12 @@ public class RestErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public RestErrorResponse processDataSourceNotUpdateable(DataSourceNotUpdateableException ex) {
-        return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "DataSource not updateable: " + ex
-                .getDataSourceName());
+        return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "DataSource not updateable: " + ex.getDataSourceName());
     }
-    
+
     /**
-     * DataSource invalid exception handler method - mapped to
-     * BAD_REQUEST.
+     * DataSource invalid exception handler method - mapped to BAD_REQUEST.
      * 
      * @param ex
      * @return
@@ -142,8 +145,7 @@ public class RestErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public RestErrorResponse processDataSourceNotUpdateable(InvalidDataSourceException ex) {
-        return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "DataSource invalid: " + ex
-                .getMessage());
+        return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), "DataSource invalid: " + ex.getMessage());
     }
 
     /**
@@ -168,7 +170,8 @@ public class RestErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public RestErrorResponse processAnyException(Exception ex) {
+    public RestErrorResponse processAnyException(HttpServletRequest req, Exception ex) {
+        logger.error("{} {} - Unexpected error!", req.getMethod(), req.getRequestURI(), ex);
         final Map<String, Object> additionalDetails = new HashMap<>();
         additionalDetails.put("exception_type", ex.getClass().getName());
         return new RestErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), additionalDetails);

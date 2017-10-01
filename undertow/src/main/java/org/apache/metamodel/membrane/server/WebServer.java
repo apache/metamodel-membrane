@@ -22,6 +22,7 @@ import java.io.File;
 
 import javax.servlet.ServletException;
 
+import org.apache.metamodel.util.FileHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoaderListener;
@@ -47,6 +48,8 @@ public class WebServer {
     private static final int DEFAULT_PORT = 8080;
 
     public static void main(final String[] args) throws Exception {
+        prepareDataDirectoryIfNeeded();
+
         final String portEnv = System.getenv("MEMBRANE_HTTP_PORT");
         final int port = Strings.isNullOrEmpty(portEnv) ? DEFAULT_PORT : Integer.parseInt(portEnv);
 
@@ -55,6 +58,15 @@ public class WebServer {
         startServer(port);
 
         logger.info("Apache MetaModel Membrane server started on port {}", port);
+    }
+
+    private static void prepareDataDirectoryIfNeeded() {
+        final String property = "DATA_DIRECTORY";
+        if (System.getProperty(property) == null && System.getenv(property) == null) {
+            final String tempDirectory = FileHelper.getTempDir().getAbsolutePath() + "/membrane";
+            logger.warn("No DATA_DIRECTORY defined, using {}", tempDirectory);
+            System.setProperty(property, tempDirectory);
+        }
     }
 
     public static void startServer(int port) throws Exception {

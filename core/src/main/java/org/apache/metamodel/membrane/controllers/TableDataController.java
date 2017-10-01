@@ -19,6 +19,7 @@
 package org.apache.metamodel.membrane.controllers;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +51,8 @@ import org.apache.metamodel.query.SelectItem;
 import org.apache.metamodel.schema.Column;
 import org.apache.metamodel.schema.Table;
 import org.apache.metamodel.update.RowUpdationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +71,7 @@ import com.google.common.collect.Lists;
         "/{tenant}/{dataContext}/s/{schema}/t/{table}/d" }, produces = MediaType.APPLICATION_JSON_VALUE)
 public class TableDataController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TableDataController.class);
     private final TenantRegistry tenantRegistry;
 
     @Autowired
@@ -90,7 +94,7 @@ public class TableDataController {
 
         final Query query = dataContext.query().from(table).selectAll().toQuery();
 
-        return QueryController.executeQuery(dataContext, query, offset, limit);
+        return QueryController.executeQuery(tenantContext, dataSourceName, dataContext, query, offset, limit);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -106,6 +110,10 @@ public class TableDataController {
         final DataContextTraverser traverser = new DataContextTraverser(dataContext);
 
         final Table table = traverser.getTable(schemaId, tableId);
+
+        logger.info("{}/{}/s/{}/t/{} - Data update: {} updates, {} deletes, {} inserts", tenantContext.getTenantName(),
+                dataSourceName, schemaId, tableId, size(postDataReq.getUpdate()), size(postDataReq.getDelete()),
+                size(postDataReq.getInsert()));
 
         final UpdateSummary result = dataContext.executeUpdate(new UpdateScript() {
             @Override
@@ -161,6 +169,10 @@ public class TableDataController {
         }
 
         return response;
+    }
+
+    private static int size(Collection<?> col) {
+        return col == null ? 0 : col.size();
     }
 
     private void setWhere(WhereClauseBuilder<?> whereBuilder, Table table, List<WhereCondition> conditions) {
