@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM maven:3.5-jdk-9-slim
+FROM maven:3.5-jdk-8-alpine
 
 # Set data directory used for the app's persistence
 VOLUME /data
