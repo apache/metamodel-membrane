@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.metamodel.membrane.app;
+package org.apache.metamodel.membrane.app.registry.memory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 import org.apache.metamodel.membrane.app.exceptions.NoSuchTenantException;
 import org.apache.metamodel.membrane.app.exceptions.TenantAlreadyExistException;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

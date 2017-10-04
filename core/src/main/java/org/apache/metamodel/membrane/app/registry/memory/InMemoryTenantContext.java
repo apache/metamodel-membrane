@@ -16,7 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.metamodel.membrane.app;
+package org.apache.metamodel.membrane.app.registry.memory;
+
+import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.cache.CachedDataSourceRegistryWrapper;
 
 public class InMemoryTenantContext implements TenantContext {
 

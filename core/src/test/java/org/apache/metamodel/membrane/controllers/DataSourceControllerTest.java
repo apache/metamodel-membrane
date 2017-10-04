@@ -20,9 +20,9 @@ package org.apache.metamodel.membrane.controllers;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.metamodel.membrane.app.InMemoryTenantRegistry;
-import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.app.exceptions.InvalidDataSourceException;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
+import org.apache.metamodel.membrane.app.registry.memory.InMemoryTenantRegistry;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
 import org.apache.metamodel.membrane.swagger.model.GetDatasourceResponse;
 import org.junit.Assert;

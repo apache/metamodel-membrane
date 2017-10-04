@@ -25,8 +25,8 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.membrane.app.DataContextTraverser;
-import org.apache.metamodel.membrane.app.TenantContext;
-import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
 import org.apache.metamodel.membrane.swagger.model.GetTableResponse;
 import org.apache.metamodel.membrane.swagger.model.GetTableResponseColumns;
 import org.apache.metamodel.schema.Table;

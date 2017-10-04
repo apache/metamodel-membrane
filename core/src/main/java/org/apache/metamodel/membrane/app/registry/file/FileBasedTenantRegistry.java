@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.metamodel.membrane.app.TenantContext;
-import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchTenantException;
 import org.apache.metamodel.membrane.app.exceptions.TenantAlreadyExistException;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
 
 import com.google.common.base.Strings;
 

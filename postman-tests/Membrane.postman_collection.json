@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Membrane",
-		"_postman_id": "1265d16a-b1fd-26a4-7ea5-d2e4015df97e",
+		"_postman_id": "fc875392-a36c-6ff7-46fb-53eab9cd3c3e",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -27,7 +27,10 @@
 				"url": "{{baseUrl}}/swagger.json",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -43,9 +46,12 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"type is tenant\"] = jsonData.type === \"tenant\";",
+							"var isTenant = jsonData.type === \"tenant\";",
+							"tests[\"type is tenant\"] = isTenant;",
 							"",
-							"postman.setGlobalVariable(\"membrane_tenant\", jsonData.name);",
+							"if (isTenant) {",
+							"    postman.setGlobalVariable(\"membrane_tenant\", jsonData.name);",
+							"}",
 							""
 						]
 					}
@@ -89,7 +95,10 @@
 				"url": "{{baseUrl}}/{{membrane_tenant}}",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -521,7 +530,10 @@
 				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
 				"method": "DELETE",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []

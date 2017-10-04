@@ -20,9 +20,9 @@ package org.apache.metamodel.membrane.app.registry.file;
 
 import java.io.File;
 
-import org.apache.metamodel.membrane.app.CachedDataSourceRegistryWrapper;
-import org.apache.metamodel.membrane.app.DataSourceRegistry;
-import org.apache.metamodel.membrane.app.TenantContext;
+import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.cache.CachedDataSourceRegistryWrapper;
 
 class FileBasedTenantContext implements TenantContext {
 

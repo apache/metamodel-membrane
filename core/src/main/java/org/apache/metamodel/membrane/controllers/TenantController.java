@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.metamodel.membrane.app.TenantContext;
-import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
 import org.apache.metamodel.membrane.swagger.model.DeleteTenantResponse;
 import org.apache.metamodel.membrane.swagger.model.GetTenantResponse;
 import org.apache.metamodel.membrane.swagger.model.GetTenantResponseDatasources;

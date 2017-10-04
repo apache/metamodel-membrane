@@ -22,9 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
-import org.apache.metamodel.membrane.app.InMemoryTenantRegistry;
-import org.apache.metamodel.membrane.app.TenantRegistry;
 import org.apache.metamodel.membrane.app.config.JacksonConfig;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
+import org.apache.metamodel.membrane.app.registry.memory.InMemoryTenantRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.metamodel.membrane.app;
+package org.apache.metamodel.membrane.app.registry.memory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.factory.DataContextProperties;
+import org.apache.metamodel.membrane.app.DataContextSupplier;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
+import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
 
 public class InMemoryDataSourceRegistry implements DataSourceRegistry {
 

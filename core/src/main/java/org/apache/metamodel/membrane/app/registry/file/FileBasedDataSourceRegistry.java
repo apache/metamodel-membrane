@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.factory.DataContextProperties;
 import org.apache.metamodel.membrane.app.DataContextSupplier;
-import org.apache.metamodel.membrane.app.DataSourceRegistry;
 import org.apache.metamodel.membrane.app.config.JacksonConfig;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
+import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.data.DataSet;
-import org.apache.metamodel.membrane.app.TenantContext;
-import org.apache.metamodel.membrane.app.TenantRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
+import org.apache.metamodel.membrane.app.registry.TenantRegistry;
 import org.apache.metamodel.membrane.swagger.model.QueryResponse;
 import org.apache.metamodel.query.Query;
 import org.slf4j.Logger;

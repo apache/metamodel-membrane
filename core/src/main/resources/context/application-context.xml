@@ -33,8 +33,14 @@ under the License.
 	<context:component-scan base-package="org.apache.metamodel.membrane.app" />
 
 	<bean id="tenantRegistry"
-		class="org.apache.metamodel.membrane.app.registry.file.FileBasedTenantRegistry">
-		<constructor-arg name="directory" value="${DATA_DIRECTORY}" />
+		class="org.apache.metamodel.membrane.app.registry.cache.CachedTenantRegistryWrapper">
+		<constructor-arg name="delegate">
+			<bean
+				class="org.apache.metamodel.membrane.app.registry.file.FileBasedTenantRegistry">
+				<constructor-arg name="directory" value="${DATA_DIRECTORY}" />
+			</bean>
+		</constructor-arg>
 	</bean>
+
 
 </beans>
