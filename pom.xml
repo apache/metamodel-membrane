@@ -43,16 +43,6 @@ under the License.
 	<inceptionYear>2017</inceptionYear>
 	<packaging>pom</packaging>
 
-	<repositories>
-		<repository>
-			<id>metamodel-5-staging</id>
-			<url>http://repository.apache.org/content/repositories/orgapachemetamodel-1026</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
 	<profiles>
 		<profile>
 			<!-- Normal profile for a build on a machine without specific tools like Docker or Newman installed -->
