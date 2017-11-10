@@ -31,11 +31,11 @@ under the License.
 		<url>https://git-wip-us.apache.org/repos/asf?p=metamodel-membrane.git</url>
 		<connection>scm:git:http://git-wip-us.apache.org/repos/asf/metamodel-membrane.git</connection>
 		<developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/metamodel-membrane.git</developerConnection>
-		<tag>Membrane-parent-0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<groupId>org.apache.metamodel.membrane</groupId>
 	<artifactId>Membrane-parent</artifactId>
-	<version>0.1</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>MetaModel Membrane</name>
 	<description>Data Federation as a RESTful service.</description>
 	<url>http://metamodel.apache.org</url>
