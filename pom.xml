@@ -17,8 +17,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
 		<metamodel.version>5.0.0</metamodel.version>
@@ -32,11 +31,11 @@ under the License.
 		<url>https://git-wip-us.apache.org/repos/asf?p=metamodel-membrane.git</url>
 		<connection>scm:git:http://git-wip-us.apache.org/repos/asf/metamodel-membrane.git</connection>
 		<developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/metamodel-membrane.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>Membrane-parent-0.1</tag>
 	</scm>
 	<groupId>org.apache.metamodel.membrane</groupId>
 	<artifactId>Membrane-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>MetaModel Membrane</name>
 	<description>Data Federation as a RESTful service.</description>
 	<url>http://metamodel.apache.org</url>
@@ -87,8 +86,7 @@ under the License.
 					<artifactId>apache-rat-plugin</artifactId>
 					<configuration>
 						<licenses>
-							<license
-								implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+							<license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
 								<licenseFamilyCategory>ASL20</licenseFamilyCategory>
 								<licenseFamilyName>Apache Software License, 2.0</licenseFamilyName>
 								<notes>Single licensed ASL v2.0</notes>
