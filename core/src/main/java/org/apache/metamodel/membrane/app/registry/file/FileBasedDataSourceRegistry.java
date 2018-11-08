@@ -28,17 +28,18 @@ import java.util.stream.Collectors;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.factory.DataContextProperties;
-import org.apache.metamodel.membrane.app.DataContextSupplier;
 import org.apache.metamodel.membrane.app.config.JacksonConfig;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
-import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.AbstractDataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.DataContextSupplier;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
 import org.apache.metamodel.membrane.controllers.model.RestDataSourceDefinition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 
-public class FileBasedDataSourceRegistry implements DataSourceRegistry {
+public class FileBasedDataSourceRegistry extends AbstractDataSourceRegistry {
 
     private static final ObjectMapper OBJECT_MAPPER = JacksonConfig.getObjectMapper();
     private static final String DATASOURCE_FILE_SUFFIX = ".json";
@@ -46,7 +47,8 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
 
     private final File directory;
 
-    public FileBasedDataSourceRegistry(File directory) {
+    public FileBasedDataSourceRegistry(TenantContext tenantContext, File directory) {
+        super(tenantContext);
         this.directory = directory;
     }
 
@@ -115,7 +117,7 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
         }
 
         final DataContextSupplier supplier =
-                new DataContextSupplier(dataSourceName, dataSource.toDataContextProperties());
+                createDataContextSupplier(dataSourceName, dataSource.toDataContextProperties());
         return supplier.get();
     }
 
@@ -133,10 +135,5 @@ public class FileBasedDataSourceRegistry implements DataSourceRegistry {
         if (!deleted) {
             throw new UncheckedIOException(new IOException("Unable to delete file: " + file));
         }
-    }
-
-    public DataContext openDataContext(DataContextProperties properties) {
-        final DataContextSupplier supplier = new DataContextSupplier(null, properties);
-        return supplier.get();
     }
 }

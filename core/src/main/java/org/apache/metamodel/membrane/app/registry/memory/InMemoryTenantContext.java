@@ -29,7 +29,7 @@ public class InMemoryTenantContext implements TenantContext {
 
     public InMemoryTenantContext(String tenantIdentifier) {
         this.tenantIdentifier = tenantIdentifier;
-        this.dataContextRegistry = new CachedDataSourceRegistryWrapper(new InMemoryDataSourceRegistry());
+        this.dataContextRegistry = new CachedDataSourceRegistryWrapper(new InMemoryDataSourceRegistry(this));
     }
 
     @Override

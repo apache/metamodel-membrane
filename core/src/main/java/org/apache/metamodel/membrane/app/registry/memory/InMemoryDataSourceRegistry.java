@@ -26,16 +26,17 @@ import java.util.stream.Collectors;
 
 import org.apache.metamodel.DataContext;
 import org.apache.metamodel.factory.DataContextProperties;
-import org.apache.metamodel.membrane.app.DataContextSupplier;
 import org.apache.metamodel.membrane.app.exceptions.DataSourceAlreadyExistException;
 import org.apache.metamodel.membrane.app.exceptions.NoSuchDataSourceException;
-import org.apache.metamodel.membrane.app.registry.DataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.AbstractDataSourceRegistry;
+import org.apache.metamodel.membrane.app.registry.TenantContext;
 
-public class InMemoryDataSourceRegistry implements DataSourceRegistry {
+public class InMemoryDataSourceRegistry extends AbstractDataSourceRegistry {
 
     private final Map<String, Supplier<DataContext>> dataSources;
 
-    public InMemoryDataSourceRegistry() {
+    public InMemoryDataSourceRegistry(final TenantContext tenantContext) {
+        super(tenantContext);
         dataSources = new LinkedHashMap<>();
     }
 
@@ -46,7 +47,7 @@ public class InMemoryDataSourceRegistry implements DataSourceRegistry {
             throw new DataSourceAlreadyExistException(name);
         }
 
-        dataSources.put(name, new DataContextSupplier(name, dataContextProperties));
+        dataSources.put(name, createDataContextSupplier(name, dataContextProperties));
         return name;
     }
 
@@ -70,10 +71,5 @@ public class InMemoryDataSourceRegistry implements DataSourceRegistry {
             throw new NoSuchDataSourceException(dataSourceName);
         }
         dataSources.remove(dataSourceName);
-    }
-
-    public DataContext openDataContext(DataContextProperties properties) {
-        final DataContextSupplier supplier = new DataContextSupplier(null, properties);
-        return supplier.get();
     }
 }

@@ -16,33 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.metamodel.membrane.app;
-
-import java.util.function.Supplier;
+package org.apache.metamodel.membrane.app.registry;
 
 import org.apache.metamodel.DataContext;
-import org.apache.metamodel.factory.DataContextFactoryRegistryImpl;
 import org.apache.metamodel.factory.DataContextProperties;
 
-public class DataContextSupplier implements Supplier<DataContext> {
+public abstract class AbstractDataSourceRegistry implements DataSourceRegistry {
 
-    private final String dataSourceName;
-    private final DataContextProperties dataContextProperties;
+    private final TenantContext tenantContext;
 
-    public DataContextSupplier(String dataSourceName, DataContextProperties dataContextProperties) {
-        this.dataSourceName = dataSourceName;
-        this.dataContextProperties = dataContextProperties;
+    public AbstractDataSourceRegistry(TenantContext tenantContext) {
+        this.tenantContext = tenantContext;
+    }
+
+    protected DataContextSupplier createDataContextSupplier(String name, DataContextProperties properties) {
+        final DataContextSupplier supplier = new DataContextSupplier(tenantContext, name, properties);
+        return supplier;
     }
 
     @Override
-    public DataContext get() {
-        final DataContext dataContext = DataContextFactoryRegistryImpl.getDefaultInstance().createDataContext(
-                dataContextProperties);
-        return dataContext;
+    public DataContext openDataContext(DataContextProperties properties) {
+        return createDataContextSupplier(null, properties).get();
     }
 
-    @Override
-    public String toString() {
-        return "DataContextSupplier[" + dataSourceName + "]";
+    protected TenantContext getTenantContext() {
+        return tenantContext;
     }
 }
