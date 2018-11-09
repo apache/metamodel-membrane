@@ -7,10 +7,9 @@ services:
 - docker
 
 before_install:
-- curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 - sudo apt-get -qq update
-- sudo apt-get install -y nodejs
 - sudo apt-get install -y npm
+- sudo npm config set registry="http://registry.npmjs.org/"
 - sudo npm install newman@3.9.4 --global;
 
 script:
