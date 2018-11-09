@@ -22,7 +22,7 @@ under the License.
 	<parent>
 		<groupId>org.apache.metamodel.membrane</groupId>
 		<artifactId>Membrane-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>Membrane-postman-tests</artifactId>
@@ -111,6 +111,7 @@ under the License.
 							<![CDATA[
 			                -c "newman run ./Membrane.postman_collection.json \
 			                -e ./environments/${postman.env}.postman_environment.json \
+			                --disable-unicode \
 			                --reporters junit,cli -x \
 			                --reporter-junit-export ./target/NewmanTestResults.xml"
 			                ]]>

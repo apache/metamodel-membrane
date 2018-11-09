@@ -8,8 +8,9 @@ services:
 
 before_install:
 - sudo apt-get -qq update
-- sudo apt-get install npm
-- sudo npm install newman --global;
+- sudo apt-get install -y npm
+- sudo npm config set registry="http://registry.npmjs.org/"
+- sudo npm install newman@3.9.3 --global;
 
 script:
 - mvn clean install -Pfull
