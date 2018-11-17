@@ -1,10 +1,8 @@
 {
-	"variables": [],
 	"info": {
+		"_postman_id": "b07b47aa-5a8c-4be5-bbc3-0fd98040ee92",
 		"name": "Membrane",
-		"_postman_id": "fc875392-a36c-6ff7-46fb-53eab9cd3c3e",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -24,14 +22,21 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/swagger.json",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/swagger.json",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"swagger.json"
+					]
+				}
 			},
 			"response": []
 		},
@@ -58,20 +63,26 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/my-tenant",
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/my-tenant",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"my-tenant"
+					]
+				}
 			},
 			"response": []
 		},
@@ -92,14 +103,21 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -124,20 +142,27 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/example-postgres",
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"type\":\"jdbc\",\n    \"url\": \"jdbc:postgresql://example-postgres/membrane\",\n    \"username\": \"membrane\",\n    \"password\": \"secret\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/example-postgres",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"example-postgres"
+					]
+				}
 			},
 			"response": []
 		},
@@ -162,20 +187,27 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/example-couchdb",
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"type\":\"couchdb\",\n    \"hostname\": \"example-couchdb\",\n    \"username\": \"membrane\",\n    \"password\": \"secret\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/example-couchdb",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"example-couchdb"
+					]
+				}
 			},
 			"response": []
 		},
@@ -202,20 +234,27 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/example-pojo",
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/example-pojo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"example-pojo"
+					]
+				}
 			},
 			"response": []
 		},
@@ -246,20 +285,27 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -288,20 +334,29 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"s",
+						"{{membrane_schema}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -332,20 +387,31 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"s",
+						"{{membrane_schema}}",
+						"t",
+						"{{membrane_table}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -367,20 +433,32 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"insert\": [\n\t\t{\n\t\t\t\"bar\": 42,\n\t\t\t\"baz\": null\n\t\t}\n\t]\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"s",
+						"{{membrane_schema}}",
+						"t",
+						"{{membrane_table}}",
+						"d"
+					]
+				}
 			},
 			"response": []
 		},
@@ -402,20 +480,32 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/d",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"s",
+						"{{membrane_schema}}",
+						"t",
+						"{{membrane_table}}",
+						"d"
+					]
+				}
 			},
 			"response": []
 		},
@@ -437,6 +527,17 @@
 				}
 			],
 			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/q?sql=SELECT * FROM {{membrane_table}}",
 					"host": [
@@ -450,26 +551,10 @@
 					"query": [
 						{
 							"key": "sql",
-							"value": "SELECT * FROM {{membrane_table}}",
-							"equals": true,
-							"description": ""
+							"value": "SELECT * FROM {{membrane_table}}"
 						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"description": ""
+					]
+				}
 			},
 			"response": []
 		},
@@ -491,20 +576,128 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/c/{{membrane_column}}",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"type\":\"pojo\",\n    \"table-defs\":\"hello_world (greeting VARCHAR, who VARCHAR); foo (bar INTEGER, baz DATE);\"\n}"
+					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}/s/{{membrane_schema}}/t/{{membrane_table}}/c/{{membrane_column}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}",
+						"s",
+						"{{membrane_schema}}",
+						"t",
+						"{{membrane_table}}",
+						"c",
+						"{{membrane_column}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create data source - federated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9d1f41d7-12f9-44b0-8730-6e869b22e7d2",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is datasource\"] = jsonData.type === \"datasource\";",
+							"tests[\"is NOT updateable\"] = !jsonData.updateable;",
+							"",
+							"tests[\"has > 3 schemas\"] = jsonData.schemas.length > 3;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"federated\",\n    \"datasources\": [\n        \"example-pojo\",\n        \"example-couchdb\",\n        \"example-postgres\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/example-federated",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"example-federated"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query federated datasource",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "689cf505-4bca-49b1-95a6-a861b026e31b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"type is dataset\"] = jsonData.type === \"dataset\";",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/example-federated/q?sql=SELECT * FROM {{membrane_schema}}.{{membrane_table}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"example-federated",
+						"q"
+					],
+					"query": [
+						{
+							"key": "sql",
+							"value": "SELECT * FROM {{membrane_schema}}.{{membrane_table}}"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -527,14 +720,22 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
 				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}/{{membrane_data_source}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}",
+						"{{membrane_data_source}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -557,11 +758,21 @@
 				}
 			],
 			"request": {
-				"url": "{{baseUrl}}/{{membrane_tenant}}",
 				"method": "DELETE",
 				"header": [],
-				"body": {},
-				"description": ""
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{membrane_tenant}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{membrane_tenant}}"
+					]
+				}
 			},
 			"response": []
 		}

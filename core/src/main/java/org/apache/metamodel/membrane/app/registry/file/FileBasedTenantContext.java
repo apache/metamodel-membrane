@@ -31,7 +31,8 @@ class FileBasedTenantContext implements TenantContext {
 
     public FileBasedTenantContext(File directory) {
         this.directory = directory;
-        this.dataContextRegistry = new CachedDataSourceRegistryWrapper(new FileBasedDataSourceRegistry(directory));
+        this.dataContextRegistry =
+                new CachedDataSourceRegistryWrapper(new FileBasedDataSourceRegistry(this, directory));
     }
 
     @Override
