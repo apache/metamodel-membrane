@@ -18,11 +18,9 @@
  */
 package org.apache.metamodel.membrane.app.registry;
 
-import java.util.Collection;
 import java.util.function.Supplier;
 
 import org.apache.metamodel.DataContext;
-import org.apache.metamodel.factory.DataContextFactory;
 import org.apache.metamodel.factory.DataContextFactoryRegistry;
 import org.apache.metamodel.factory.DataContextFactoryRegistryImpl;
 import org.apache.metamodel.factory.DataContextProperties;
@@ -52,17 +50,13 @@ public class DataContextSupplier implements Supplier<DataContext> {
 
     private DataContextFactoryRegistry getRegistryForTenant() {
         final ResourceFactoryRegistry resourceFactoryRegistry = ResourceFactoryRegistryImpl.getDefaultInstance();
-        final DataContextFactoryRegistry registry = new DataContextFactoryRegistryImpl(resourceFactoryRegistry);
-
-        // Add default/standard factories. This is pretty cumbersome. New constructor/cloning options in MetaModel
-        // should make this easier: https://github.com/apache/metamodel/pull/192
         final DataContextFactoryRegistry defaultRegistry = DataContextFactoryRegistryImpl.getDefaultInstance();
-        final Collection<DataContextFactory> defaultFactories = defaultRegistry.getFactories();
-        for (DataContextFactory factory : defaultFactories) {
-            registry.addFactory(factory);
-        }
 
-        // add tenant-specific factories
+        // create a new registry with all the default factories in it
+        final DataContextFactoryRegistry registry =
+                new DataContextFactoryRegistryImpl(defaultRegistry.getFactories(), resourceFactoryRegistry);
+
+        // add tenant-specific factory
         registry.addFactory(new FederatedDataContextFactory(tenantContext));
         return registry;
     }
