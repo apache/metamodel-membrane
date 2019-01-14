@@ -24,6 +24,6 @@ ENV DATA_DIRECTORY=/data
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-RUN mvn clean install -Pdockerbuild -DskipTests
+RUN mvn -B -q clean install -Pdockerbuild -DskipTests
 
 CMD java -server -jar undertow/target/membrane-undertow-server.jar
