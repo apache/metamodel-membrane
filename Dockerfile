@@ -15,15 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM maven:3-jdk-8
+FROM adoptopenjdk/openjdk8:latest
 
 # Set data directory used for the app's persistence
 VOLUME /data
 ENV DATA_DIRECTORY=/data
 
-COPY . /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir /app
 
-RUN mvn -B -q clean install -Pdockerbuild -DskipTests
+COPY undertow/target/membrane-undertow-server.jar /app 
+WORKDIR /app
 
-CMD java -server -jar undertow/target/membrane-undertow-server.jar
+CMD java -server -jar membrane-undertow-server.jar
