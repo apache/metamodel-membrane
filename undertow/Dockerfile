@@ -23,7 +23,7 @@ ENV DATA_DIRECTORY=/data
 
 RUN mkdir /app
 
-COPY undertow/target/membrane-undertow-server.jar /app 
+COPY target/membrane-undertow-server.jar /app/membrane-undertow-server.jar
 WORKDIR /app
 
 CMD java -server -jar membrane-undertow-server.jar
