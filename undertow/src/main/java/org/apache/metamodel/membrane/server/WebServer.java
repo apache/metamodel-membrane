@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -33,6 +33,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import com.google.common.base.Strings;
 
 import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -52,10 +53,12 @@ public class WebServer {
 
         final String portEnv = System.getenv("MEMBRANE_HTTP_PORT");
         final int port = Strings.isNullOrEmpty(portEnv) ? DEFAULT_PORT : Integer.parseInt(portEnv);
+        final String enableCorsEnv = System.getenv("ENABLE_CORS");
+        final boolean enableCors = !Strings.isNullOrEmpty(enableCorsEnv);
 
         logger.info("Apache MetaModel Membrane server initiating on port {}", port);
 
-        startServer(port);
+        startServer(port, enableCors);
 
         logger.info("Apache MetaModel Membrane server started on port {}", port);
     }
@@ -69,7 +72,7 @@ public class WebServer {
         }
     }
 
-    public static void startServer(int port) throws Exception {
+    public static void startServer(int port, boolean enableCors) throws Exception {
         final DeploymentInfo deployment = Servlets.deployment().setClassLoader(WebServer.class.getClassLoader());
         deployment.setContextPath("");
         deployment.setDeploymentName("membrane");
@@ -85,7 +88,15 @@ public class WebServer {
         final DeploymentManager manager = Servlets.defaultContainer().addDeployment(deployment);
         manager.deploy();
 
-        final Undertow server = Undertow.builder().addHttpListener(port, "0.0.0.0").setHandler(manager.start()).build();
+        HttpHandler handler;
+        if (enableCors) {
+            CorsHandlers corsHandlers = new CorsHandlers();
+            handler = corsHandlers.allowOrigin(manager.start());
+        }
+        else
+            handler = manager.start();
+
+        final Undertow server = Undertow.builder().addHttpListener(port, "0.0.0.0").setHandler(handler).build();
         server.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
