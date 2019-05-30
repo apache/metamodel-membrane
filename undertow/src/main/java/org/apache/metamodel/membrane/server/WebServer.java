@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -53,7 +53,7 @@ public class WebServer {
 
         final String portEnv = System.getenv("MEMBRANE_HTTP_PORT");
         final int port = Strings.isNullOrEmpty(portEnv) ? DEFAULT_PORT : Integer.parseInt(portEnv);
-        final String enableCorsEnv = System.getenv("ENABLE_CORS");
+        final String enableCorsEnv = System.getenv("MEMBRANE_ENABLE_CORS");
         final boolean enableCors = !Strings.isNullOrEmpty(enableCorsEnv);
 
         logger.info("Apache MetaModel Membrane server initiating on port {}", port);
@@ -93,8 +93,9 @@ public class WebServer {
             CorsHandlers corsHandlers = new CorsHandlers();
             handler = corsHandlers.allowOrigin(manager.start());
         }
-        else
+        else {
             handler = manager.start();
+        }
 
         final Undertow server = Undertow.builder().addHttpListener(port, "0.0.0.0").setHandler(handler).build();
         server.start();
