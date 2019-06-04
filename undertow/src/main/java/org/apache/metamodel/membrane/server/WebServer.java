@@ -88,12 +88,11 @@ public class WebServer {
         final DeploymentManager manager = Servlets.defaultContainer().addDeployment(deployment);
         manager.deploy();
 
-        HttpHandler handler;
+        final HttpHandler handler;
         if (enableCors) {
             CorsHandlers corsHandlers = new CorsHandlers();
             handler = corsHandlers.allowOrigin(manager.start());
-        }
-        else {
+        } else {
             handler = manager.start();
         }
 

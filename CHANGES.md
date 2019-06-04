@@ -1,4 +1,8 @@
-### Apache MetaModel Membrane 0.1 [work in progress]
+### Apache MetaModel Membrane [work in progress]
+
+* [METAMODEL-1212] - Added support for CORS headers.
+
+### Apache MetaModel Membrane 0.1
 
 * [METAMODEL-1153] - Added endpoints for deleting data sources.
 * [METAMODEL-1147] - Implemented Swagger codegen to build model classes from swagger file.
